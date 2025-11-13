@@ -10,7 +10,15 @@
       --panel:#0b1220;
       --accent:#06b6d4;
       --muted:#94a3b8;
+
+      /* tag color palette */
+      --phuket:#f97316;
+      --phiphi:#06b6d4;
+      --krabi:#22c55e;
+      --khaosok:#eab308;
+      --bangkok:#a855f7;
     }
+
     html,body {
       height:100%;
       margin:0;
@@ -18,10 +26,8 @@
       color:#e6eef6;
       background:linear-gradient(180deg,#071022 0%, #071827 100%);
     }
-    body {
-      display:flex;
-      flex-direction:column;
-    }
+    body { display:flex; flex-direction:column; }
+
     header {
       display:flex;
       align-items:center;
@@ -36,6 +42,7 @@
       color:var(--accent);
       letter-spacing:0.5px;
     }
+
     .app {
       display:flex;
       flex:1;
@@ -43,6 +50,7 @@
       gap:12px;
       padding:14px;
     }
+
     .sidebar {
       width:340px;
       background:rgba(255,255,255,0.03);
@@ -52,13 +60,16 @@
       flex-direction:column;
       box-shadow:0 6px 18px rgba(2,6,23,0.6);
     }
+
     .header {
       display:flex;
       align-items:center;
       justify-content:space-between;
       margin-bottom:12px;
     }
+
     h2 { font-size:16px; margin:0; }
+
     button.add {
       background:var(--accent);
       border:none;
@@ -68,7 +79,9 @@
       font-weight:600;
       cursor:pointer;
     }
+
     .list { overflow:auto; flex:1; padding-right:6px; }
+
     .hotel {
       padding:10px;
       border-radius:8px;
@@ -76,25 +89,57 @@
       cursor:pointer;
       background:transparent;
       display:flex;
-      align-items:center;
+      align-items:flex-start;
       justify-content:space-between;
+      gap:10px;
     }
+
     .hotel.selected {
       background:linear-gradient(90deg, rgba(6,182,212,0.12), rgba(6,182,212,0.06));
       box-shadow:inset 0 0 0 1px rgba(6,182,212,0.06);
     }
-    .hotel .meta { display:flex; flex-direction:column; }
+
+    .hotel .meta {
+      display:flex;
+      flex-direction:column;
+      flex:1;
+    }
+
     .hotel .name { font-weight:700; }
-    .hotel .sub { color:var(--muted); font-size:12px; }
-    .controls { display:flex; gap:6px; }
+
+    .tag {
+      display:inline-block;
+      margin-top:4px;
+      padding:2px 6px;
+      border-radius:6px;
+      font-size:11px;
+      font-weight:600;
+      color:#000;
+      width:max-content;
+    }
+
+    .controls {
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+
     .small {
       background:transparent;
       border:1px solid rgba(255,255,255,0.06);
-      padding:6px;
+      padding:6px 8px;
       border-radius:6px;
       color:var(--muted);
       cursor:pointer;
+      font-size:12px;
+      text-align:center;
     }
+
+    .small.disabled {
+      opacity:0.4;
+      cursor:not-allowed;
+    }
+
     .mapWrap {
       flex:1;
       min-width:0;
@@ -104,23 +149,27 @@
       display:flex;
       flex-direction:column;
     }
+
     .mapHeader {
       display:flex;
       align-items:center;
       justify-content:space-between;
       padding:6px 10px;
     }
+
     .mapContainer {
       flex:1;
       border-radius:10px;
       overflow:hidden;
       background:#111;
     }
+
     iframe {
       border:0;
       width:100%;
       height:100%;
     }
+
     .modalBg {
       position:fixed;
       inset:0;
@@ -129,6 +178,7 @@
       align-items:center;
       justify-content:center;
     }
+
     .modal {
       background:#071428;
       padding:18px;
@@ -136,12 +186,14 @@
       width:420px;
       box-shadow:0 10px 30px rgba(2,6,23,0.7);
     }
+
     .modal label {
       display:block;
       font-size:13px;
       margin-bottom:6px;
     }
-    .modal input {
+
+    .modal input, .modal select {
       width:100%;
       padding:10px;
       border-radius:8px;
@@ -150,11 +202,12 @@
       color:inherit;
       margin-bottom:12px;
     }
+
     .modal .row { display:flex; gap:8px; }
     .modal .row button { flex:1; }
+
     .empty { color:var(--muted); text-align:center; padding:20px; }
 
-    /* right panel for itinerary */
     .itinerary {
       width:260px;
       background:rgba(255,255,255,0.03);
@@ -164,12 +217,14 @@
       flex-direction:column;
       box-shadow:0 6px 18px rgba(2,6,23,0.6);
     }
+
     .itinerary h3 {
       font-size:16px;
       margin-top:0;
       margin-bottom:10px;
       color:var(--accent);
     }
+
     .night {
       display:flex;
       align-items:center;
@@ -179,7 +234,9 @@
       border-radius:8px;
       padding:6px 8px;
     }
+
     .night label { font-size:13px; }
+
     select {
       background:#0b1220;
       color:#e6eef6;
@@ -195,401 +252,454 @@
     }
   </style>
 </head>
+
 <body>
-  <header>
-    <h1>Saily & Kavin's Awesome Honeymoon</h1>
-  </header>
+<header>
+  <h1>Saily & Kavin's Awesome Honeymoon</h1>
+</header>
 
-  <div class="app">
-    <div class="sidebar" role="navigation">
-      <div class="header">
-        <h2>Hotels</h2>
-        <div style="display:flex;gap:8px;align-items:center">
-          <button class="small" id="clearStorage" title="Clear saved hotels">Clear</button>
-          <button class="add" id="addBtn">+ Add New Hotel</button>
-        </div>
-      </div>
-      <div class="list" id="hotelList" aria-live="polite">
-        <div class="empty" id="emptyMsg">No hotels yet — click “Add New Hotel” to create one.</div>
+<div class="app">
+
+  <!-- ---------------- Sidebar (Hotels) ---------------- -->
+  <div class="sidebar">
+    <div class="header">
+      <h2>Hotels</h2>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="small" id="clearStorage">Clear</button>
+        <button class="add" id="addBtn">+ Add New Hotel</button>
       </div>
     </div>
 
-    <div class="mapWrap">
-      <div class="mapHeader">
-        <div>
-          <strong id="selectedName">No hotel selected</strong>
-          <div style="font-size:12px;color:var(--muted)" id="selectedLink">—</div>
-        </div>
-        <div style="display:flex;gap:8px">
-          <button class="small" id="zoomBtn">Zoom to place</button>
-          <button class="small" id="openBtn">Open in Google Maps</button>
-        </div>
-      </div>
-      <div class="mapContainer">
-        <iframe id="mapFrame" src="https://www.google.com/maps?q=thailand&output=embed" allowfullscreen loading="lazy"></iframe>
-      </div>
-    </div>
-
-    <div class="itinerary">
-      <h3>Night Stay Details</h3>
-      <div id="nightsContainer"></div>
+    <div class="list" id="hotelList">
+      <div class="empty" id="emptyMsg">No hotels yet — click “Add New Hotel” to create one.</div>
     </div>
   </div>
 
-  <!-- Modal -->
-  <div class="modalBg" id="modalBg">
-    <div class="modal" role="dialog" aria-modal="true">
-      <h2 style="margin-top:0;margin-bottom:8px">Add new hotel</h2>
-      <label for="hotelName">Hotel name</label>
-      <input id="hotelName" placeholder="Example: The Grand Plaza" />
-      <label for="hotelLink">Google Maps link or coordinates</label>
-      <input id="hotelLink" placeholder="Paste Google Maps share link, place name or `lat,lng`" />
-      <div class="row">
-        <button id="saveBtn" class="add">Save</button>
-        <button id="cancelBtn" class="small">Cancel</button>
+  <!-- ---------------- Map ---------------- -->
+  <div class="mapWrap">
+    <div class="mapHeader">
+      <div>
+        <strong id="selectedName">No hotel selected</strong>
+        <div style="font-size:12px;color:var(--muted)" id="selectedLink">—</div>
       </div>
+      <div style="display:flex;gap:8px">
+        <button class="small" id="zoomBtn">Zoom</button>
+        <button class="small" id="openBtn">Open Maps</button>
+      </div>
+    </div>
+
+    <div class="mapContainer">
+      <iframe id="mapFrame" src="https://www.google.com/maps?q=thailand&output=embed"></iframe>
     </div>
   </div>
 
-  <script>
-    /* -------------------------
-       Local app state & helpers
-       ------------------------- */
-    const addBtn = document.getElementById('addBtn');
-    const modalBg = document.getElementById('modalBg');
-    const saveBtn = document.getElementById('saveBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const hotelListEl = document.getElementById('hotelList');
-    const emptyMsg = document.getElementById('emptyMsg');
-    const nameInput = document.getElementById('hotelName');
-    const linkInput = document.getElementById('hotelLink');
-    const mapFrame = document.getElementById('mapFrame');
-    const selectedName = document.getElementById('selectedName');
-    const selectedLink = document.getElementById('selectedLink');
-    const zoomBtn = document.getElementById('zoomBtn');
-    const openBtn = document.getElementById('openBtn');
-    const clearStorage = document.getElementById('clearStorage');
-    const nightsContainer = document.getElementById('nightsContainer');
+  <!-- ---------------- Itinerary ---------------- -->
+  <div class="itinerary">
+    <h3>Night Stay Details</h3>
+    <div id="nightsContainer"></div>
+  </div>
 
-    // local storage keys
-    const hotelsKey = 'hotels_v1';
-    const selectedKey = 'hotels_selected';
-    const itineraryKey = 'honeymoon_itinerary_v1';
+</div>
 
-    // local state (selection stays local)
-    let hotels = JSON.parse(localStorage.getItem(hotelsKey) || '[]');
-    let selectedIndex = parseInt(localStorage.getItem(selectedKey)) || 0;
-    let itinerary = JSON.parse(localStorage.getItem(itineraryKey) || '[]');
-    if(!Array.isArray(itinerary) || itinerary.length !== 8) itinerary = Array.from({length:8},()=>'');
+<!-- ---------------- Modal ---------------- -->
+<div class="modalBg" id="modalBg">
+  <div class="modal">
+    <h2 style="margin-top:0;margin-bottom:8px">Add new hotel</h2>
 
-    // destination options
-    const destinations = ['Phuket','Phi Phi','Krabi','Khao Sok','Bangkok'];
-    const startDate = new Date(2026,1,21); // Feb 21, 2026
+    <label>Hotel name</label>
+    <input id="hotelName">
 
-    /* -------------------------
-       Rendering functions
-       ------------------------- */
-    function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    <label>Google Maps link</label>
+    <input id="hotelLink">
 
-    function renderList(){
-      hotelListEl.innerHTML = '';
-      if(!hotels.length){
-        hotelListEl.appendChild(emptyMsg);
-        return;
-      }
-      hotels.forEach((h, i) => {
-        const el = document.createElement('div');
-        el.className = 'hotel' + (i===selectedIndex? ' selected':'');
-        el.tabIndex = 0;
-        el.innerHTML = `<div class="meta"><div class="name">${escapeHtml(h.name)}</div><div class="sub">${escapeHtml(h.link)}</div></div>`;
-        const controls = document.createElement('div');
-        controls.className = 'controls';
-        const edit = document.createElement('button'); edit.className='small'; edit.title='Edit'; edit.innerText='Edit';
-        const del = document.createElement('button'); del.className='small'; del.title='Delete'; del.innerText='Delete';
-        controls.appendChild(edit); controls.appendChild(del);
-        el.appendChild(controls);
+    <label>Booking link (optional)</label>
+    <input id="hotelBooking">
 
-        el.addEventListener('click', (ev)=>{
-          if(ev.target===del || ev.target===edit) return; // allow button handlers
-          selectedIndex = i; localSaveSelection(); renderList(); updateMap();
-        });
-        el.addEventListener('keydown',(ev)=>{ if(ev.key==='Enter') { selectedIndex = i; localSaveSelection(); renderList(); updateMap(); }});
+    <label>Location</label>
+    <select id="hotelLocation">
+      <option value="">—</option>
+      <option>Phuket</option>
+      <option>Phi Phi</option>
+      <option>Krabi</option>
+      <option>Khao Sok</option>
+      <option>Bangkok</option>
+    </select>
 
-        edit.addEventListener('click',(ev)=>{ ev.stopPropagation(); openModal(h.name,h.link,i); });
-        del.addEventListener('click',(ev)=>{ ev.stopPropagation(); if(confirm('Delete "'+h.name+'"?')){ hotels.splice(i,1); if(selectedIndex>=hotels.length) selectedIndex = hotels.length-1; localSaveAll(); saveHotelData().catch(e=>console.warn('saveHotelData error',e)); renderList(); updateMap(); }});
+    <div class="row">
+      <button class="add" id="saveBtn">Save</button>
+      <button class="small" id="cancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
 
-        hotelListEl.appendChild(el);
-      });
+<!-- ============================= -->
+<!-- MAIN APP LOGIC (Local + UI)  -->
+<!-- ============================= -->
+<script>
+/* ------ UI Elements ------ */
+const addBtn = document.getElementById('addBtn');
+const modalBg = document.getElementById('modalBg');
+const saveBtn = document.getElementById('saveBtn');
+const cancelBtn = document.getElementById('cancelBtn');
+
+const nameInput = document.getElementById('hotelName');
+const linkInput = document.getElementById('hotelLink');
+const bookingInput = document.getElementById('hotelBooking');
+const locationInput = document.getElementById('hotelLocation');
+
+const hotelListEl = document.getElementById('hotelList');
+const emptyMsg = document.getElementById('emptyMsg');
+
+const nightsContainer = document.getElementById('nightsContainer');
+
+const selectedName = document.getElementById('selectedName');
+const selectedLink = document.getElementById('selectedLink');
+const mapFrame = document.getElementById('mapFrame');
+
+const clearStorage = document.getElementById('clearStorage');
+const zoomBtn = document.getElementById('zoomBtn');
+const openBtn = document.getElementById('openBtn');
+
+/* ------ Local State ------ */
+const hotelsKey = 'hotels_v1';
+const selectedKey = 'hotels_selected';
+const itineraryKey = 'honeymoon_itinerary_v1';
+
+let hotels = JSON.parse(localStorage.getItem(hotelsKey) || '[]');
+let selectedIndex = parseInt(localStorage.getItem(selectedKey) || '0');
+let itinerary = JSON.parse(localStorage.getItem(itineraryKey) || '[]');
+if (!Array.isArray(itinerary) || itinerary.length !== 8)
+  itinerary = Array.from({length:8},()=>'');
+
+/* ------ Helpers ------ */
+function escapeHtml(s){ return String(s||'').replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
+
+function localSaveAll(){
+  localStorage.setItem(hotelsKey, JSON.stringify(hotels));
+  localStorage.setItem(selectedKey, selectedIndex);
+  localStorage.setItem(itineraryKey, JSON.stringify(itinerary));
+}
+
+function localSaveSelection(){
+  localStorage.setItem(selectedKey, selectedIndex);
+}
+
+/* ------ Render Hotel List ------ */
+function renderList(){
+  hotelListEl.innerHTML = '';
+  if(!hotels.length){
+    hotelListEl.appendChild(emptyMsg);
+    return;
+  }
+
+  hotels.forEach((h,i)=>{
+    const el = document.createElement('div');
+    el.className = 'hotel' + (i===selectedIndex ? ' selected' : '');
+
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.innerHTML = `
+      <div class="name">${escapeHtml(h.name)}</div>
+      <span class="tag" style="background:${
+        h.location==='Phuket'   ? 'var(--phuket)'   :
+        h.location==='Phi Phi'  ? 'var(--phiphi)'   :
+        h.location==='Krabi'    ? 'var(--krabi)'    :
+        h.location==='Khao Sok' ? 'var(--khaosok)'  :
+        h.location==='Bangkok'  ? 'var(--bangkok)'  :
+        '#999'
+      }">${h.location || ''}</span>
+      <div class="sub">${escapeHtml(h.link || '')}</div>
+    `;
+
+    const controls = document.createElement('div');
+    controls.className = 'controls';
+
+    const goBtn = document.createElement('button');
+    goBtn.className = 'small';
+    goBtn.innerText = 'Go';
+    if(h.booking){
+      goBtn.onclick = e => { e.stopPropagation(); window.open(h.booking,'_blank'); };
+    } else {
+      goBtn.classList.add('disabled');
     }
 
-    function updateMap(){
-      if(!hotels.length || selectedIndex<0 || selectedIndex>=hotels.length){
-        selectedName.textContent='No hotel selected';
-        selectedLink.textContent='—';
-        mapFrame.src = 'https://www.google.com/maps?q=thailand&output=embed';
-        return;
-      }
-      const h = hotels[selectedIndex];
-      selectedName.textContent = h.name;
-      selectedLink.textContent = h.link || '—';
-      const embed = buildEmbedUrl(h.link || h.name);
-      mapFrame.src = embed;
-    }
-
-    function buildEmbedUrl(raw){
-      if(!raw) return 'https://www.google.com/maps?q=thailand&output=embed';
-      raw = raw.trim();
-      const coord = raw.match(/@?\s*([+-]?\d+\.\d+)\s*,\s*([+-]?\d+\.\d+)/);
-      if(coord){ const q = coord[1]+','+coord[2]; return 'https://www.google.com/maps?q='+encodeURIComponent(q)+'&output=embed'; }
-      const at = raw.match(/@([+-]?\d+\.\d+),([+-]?\d+\.\d+),/);
-      if(at){ const q = at[1]+','+at[2]; return 'https://www.google.com/maps?q='+encodeURIComponent(q)+'&output=embed'; }
-      if(raw.includes('/maps/embed') || raw.includes('maps.google.com/maps')){
-        return raw.includes('output=') ? raw : (raw + (raw.includes('?')? '&output=embed' : '?output=embed'));
-      }
-      if(raw.startsWith('http')){
-        try{ const url = new URL(raw); if(url.hostname.includes('google')){ const q = url.searchParams.get('q') || url.pathname; return 'https://www.google.com/maps?q='+encodeURIComponent(q)+'&output=embed'; } }catch(e){}
-      }
-      return 'https://www.google.com/maps?q='+encodeURIComponent(raw)+'&output=embed';
-    }
-
-    /* -------------------------
-       Modal & create/edit hotel
-       ------------------------- */
-    function openModal(name='', link='', editIndex=null){
-      nameInput.value = name || '';
-      linkInput.value = link || '';
-      modalBg.style.display = 'flex';
-      nameInput.focus();
-      saveBtn.onclick = ()=>{
-        const n = nameInput.value.trim(); const l = linkInput.value.trim();
-        if(!n){ alert('Please enter a hotel name'); nameInput.focus(); return; }
-        if(editIndex===null){ hotels.push({name:n, link:l}); selectedIndex = hotels.length-1; }
-        else { hotels[editIndex] = {name:n, link:l}; selectedIndex = editIndex; }
-        localSaveAll();
-        saveHotelData().catch(e=>console.warn('saveHotelData error', e));
-        renderList(); updateMap(); closeModal();
-      };
-    }
-    function closeModal(){ modalBg.style.display='none'; }
-    cancelBtn.onclick = closeModal;
-    modalBg.addEventListener('click', (e)=>{ if(e.target===modalBg) closeModal(); });
-    addBtn.addEventListener('click', ()=> openModal());
-
-    /* -------------------------
-       Local persistence helpers
-       ------------------------- */
-    function localSaveAll(){
-      localStorage.setItem(hotelsKey, JSON.stringify(hotels));
-      localStorage.setItem(selectedKey, selectedIndex);
-      localStorage.setItem(itineraryKey, JSON.stringify(itinerary));
-    }
-    function localSaveSelection(){
-      localStorage.setItem(selectedKey, selectedIndex);
-    }
-
-    /* -------------------------
-       Itinerary rendering & handlers
-       ------------------------- */
-    function renderItinerary(){
-      nightsContainer.innerHTML = '';
-      for(let i=0;i<8;i++){
-        const nightDate = new Date(startDate);
-        nightDate.setDate(startDate.getDate()+i);
-        const div = document.createElement('div');
-        div.className='night';
-        const sel = document.createElement('select');
-        sel.innerHTML = `<option value="">—</option>` + destinations.map(d=>`<option value="${d}" ${itinerary[i]===d?'selected':''}>${d}</option>`).join('');
-        sel.onchange = async ()=>{ itinerary[i] = sel.value; localSaveAll(); try{ await saveItineraryData(); }catch(e){ console.warn('saveItineraryData error',e); } };
-        div.innerHTML = `<label>Feb ${21+i}</label>`;
-        div.appendChild(sel);
-        nightsContainer.appendChild(div);
-      }
-    }
-
-    /* -------------------------
-       FIRESTORE integration
-       ------------------------- */
-  </script>
-
-  <!-- Firebase SDK (module) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, setDoc, doc, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
-
-    // ----- paste / confirm your firebase config here -----
-    const firebaseConfig = {
-      apiKey: "AIzaSyBS5earknRLZQWj9kn0qhJFgMfD8EgNY_0",
-      authDomain: "planner-21feb.firebaseapp.com",
-      projectId: "planner-21feb",
-      storageBucket: "planner-21feb.firebasestorage.app",
-      messagingSenderId: "552796038598",
-      appId: "1:552796038598:web:67538b22c836890c257ec7"
+    const editBtn = document.createElement('button');
+    editBtn.className = 'small';
+    editBtn.innerText = 'Edit';
+    editBtn.onclick = e => {
+      e.stopPropagation();
+      openModal(h.name,h.link,i,h.booking,h.location);
     };
-    // ----------------------------------------------------
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    console.log("Firebase initialized for project:", firebaseConfig.projectId);
-
-    // Firestore collection refs
-    const hotelsCol = collection(db, "hotels");
-    const itineraryCol = collection(db, "itinerary");
-
-    // Helper: write all hotels (indexed docs 0,1,2...)
-    async function saveHotelData(){
-      try{
-        // set each hotel as doc "0", "1", ...
-        for(let i=0;i<hotels.length;i++){
-          await setDoc(doc(db, "hotels", i.toString()), hotels[i]);
-        }
-        // delete extra documents if they exist on server beyond current length
-        const serverDocs = await getDocs(hotelsCol);
-        const serverIds = serverDocs.docs.map(d=>d.id);
-        for(const id of serverIds){
-          const idx = parseInt(id,10);
-          if(!Number.isNaN(idx) && idx >= hotels.length){
-            await deleteDoc(doc(db,"hotels", id));
-          }
-        }
-      }catch(e){
-        console.warn("saveHotelData failed:",e);
-        throw e;
-      }
-    }
-
-    // Helper: write itinerary (docs 0..7 with {place})
-    async function saveItineraryData(){
-      try{
-        for(let i=0;i<itinerary.length;i++){
-          await setDoc(doc(db,"itinerary", i.toString()), { place: itinerary[i] || "" });
-        }
-        // cleanup extra docs
-        const serverDocs = await getDocs(itineraryCol);
-        const serverIds = serverDocs.docs.map(d=>d.id);
-        for(const id of serverIds){
-          const idx = parseInt(id,10);
-          if(!Number.isNaN(idx) && idx >= itinerary.length){
-            await deleteDoc(doc(db,"itinerary", id));
-          }
-        }
-      }catch(e){
-        console.warn("saveItineraryData failed:",e);
-        throw e;
-      }
-    }
-
-    // Read live updates from Firestore and merge into local
-    const unsubscribeHotels = onSnapshot(hotelsCol, (snapshot) => {
-      try{
-        // Build array sorted by numeric id
-        const docs = snapshot.docs
-          .filter(d => !isNaN(Number(d.id)))
-          .map(d => ({ id: Number(d.id), data: d.data() }))
-          .sort((a,b)=>a.id-b.id)
-          .map(x=>x.data);
-
-        // If server-side list differs from local, update local array and persist locally
-        const serverJson = JSON.stringify(docs || []);
-        const localJson = JSON.stringify(hotels || []);
-        if(serverJson !== localJson){
-          hotels = docs || [];
-          localSaveAll();
-          // Only update UI list/iframe selection if selection index still valid
-          if(selectedIndex >= hotels.length) selectedIndex = Math.max(0, hotels.length-1);
-          renderList();
-          updateMap();
-        }
-      }catch(e){
-        console.warn("onSnapshot hotels processing error:",e);
-      }
-    }, (err)=> {
-      console.warn("onSnapshot hotels error:", err);
-    });
-
-    const unsubscribeItinerary = onSnapshot(itineraryCol, (snapshot) => {
-      try{
-        // Build array sorted by numeric id
-        const docs = snapshot.docs
-          .filter(d => !isNaN(Number(d.id)))
-          .map(d => ({ id: Number(d.id), data: d.data() }))
-          .sort((a,b)=>a.id-b.id)
-          .map(x => (x.data && typeof x.data.place !== 'undefined') ? x.data.place : '');
-
-        const serverJson = JSON.stringify(docs || []);
-        const localJson = JSON.stringify(itinerary || []);
-        if(serverJson !== localJson){
-          itinerary = docs.length ? docs : Array.from({length:8},()=> '');
-          localSaveAll();
-          renderItinerary();
-        }
-      }catch(e){
-        console.warn("onSnapshot itinerary processing error:",e);
-      }
-    }, (err) => {
-      console.warn("onSnapshot itinerary error:", err);
-    });
-
-    // Expose save functions to global for use in the main script
-    window.saveHotelData = saveHotelData;
-    window.saveItineraryData = saveItineraryData;
-
-  </script>
-
-  <script>
-    /* -------------------------
-       Hook up remaining UI pieces
-       ------------------------- */
-
-    // wire up clear
-    clearStorage.addEventListener('click', ()=>{
-      if(confirm('Clear saved hotels and itinerary locally? (This will also clear synced data when connection active)')){
-        hotels = [];
-        itinerary = Array.from({length:8},()=> '');
-        selectedIndex = 0;
+    const delBtn = document.createElement('button');
+    delBtn.className = 'small';
+    delBtn.innerText = 'Delete';
+    delBtn.onclick = e => {
+      e.stopPropagation();
+      if(confirm(`Delete "${h.name}"?`)){
+        hotels.splice(i,1);
+        if(selectedIndex>=hotels.length) selectedIndex = hotels.length-1;
         localSaveAll();
-        // try to remove server docs too
-        if(window.saveHotelData && window.saveItineraryData){
-          // save empty arrays to server (which will remove extra docs)
-          saveHotelData().catch(e=>console.warn(e));
-          saveItineraryData().catch(e=>console.warn(e));
-        }
-        renderList(); updateMap(); renderItinerary();
+        saveHotelData().catch(()=>{});
+        renderList();
+        updateMap();
       }
-    });
+    };
 
-    // zoom / open
-    zoomBtn.addEventListener('click', ()=>{ updateMap(); mapFrame.focus(); });
-    openBtn.addEventListener('click', ()=>{
-      if(!hotels.length) return; const h = hotels[selectedIndex];
-      const url = buildOpenUrl(h.link||h.name);
-      window.open(url,'_blank');
-    });
-    function buildOpenUrl(raw){
-      if(!raw) return 'https://www.google.com/maps';
-      const at = raw.match(/@([+-]?\d+\.\d+),([+-]?\d+\.\d+),/);
-      if(at) return 'https://www.google.com/maps?q='+encodeURIComponent(at[1]+','+at[2]);
-      if(raw.startsWith('http')) return raw;
-      return 'https://www.google.com/maps?q='+encodeURIComponent(raw);
+    controls.appendChild(goBtn);
+    controls.appendChild(editBtn);
+    controls.appendChild(delBtn);
+
+    el.appendChild(meta);
+    el.appendChild(controls);
+
+    el.onclick = ()=>{
+      selectedIndex = i;
+      localSaveSelection();
+      renderList();
+      updateMap();
+    };
+
+    hotelListEl.appendChild(el);
+  });
+}
+
+/* ------ Modal / Add / Edit ------ */
+function openModal(name='', link='', index=null, booking='', location=''){
+  nameInput.value = name;
+  linkInput.value = link;
+  bookingInput.value = booking || '';
+  locationInput.value = location || '';
+
+  modalBg.style.display='flex';
+  nameInput.focus();
+
+  saveBtn.onclick = ()=>{
+    const n = nameInput.value.trim();
+    if(!n){ alert('Name required'); return; }
+
+    const entry = {
+      name:n,
+      link:linkInput.value.trim(),
+      booking:bookingInput.value.trim(),
+      location:locationInput.value || ''
+    };
+
+    if(index===null){
+      hotels.push(entry);
+      selectedIndex = hotels.length-1;
+    } else {
+      hotels[index] = entry;
+      selectedIndex = index;
     }
 
-    // initial render calls
+    localSaveAll();
+    saveHotelData().catch(()=>{});
     renderList();
     updateMap();
+    closeModal();
+  };
+}
+
+function closeModal(){ modalBg.style.display='none'; }
+cancelBtn.onclick = closeModal;
+modalBg.onclick = e=>{ if(e.target===modalBg) closeModal(); };
+addBtn.onclick = ()=> openModal();
+
+/* ------ Map ------ */
+function buildEmbedUrl(raw){
+  if(!raw) return "https://www.google.com/maps?q=thailand&output=embed";
+  raw=raw.trim();
+  const coords = raw.match(/@?([0-9.+-]+),([0-9.+-]+)/);
+  if(coords){
+    const q = coords[1]+','+coords[2];
+    return 'https://www.google.com/maps?q='+encodeURIComponent(q)+'&output=embed';
+  }
+  return 'https://www.google.com/maps?q='+encodeURIComponent(raw)+'&output=embed';
+}
+
+function updateMap(){
+  if(!hotels.length || selectedIndex<0 || selectedIndex>=hotels.length){
+    selectedName.innerText='No hotel selected';
+    selectedLink.innerText='—';
+    mapFrame.src='https://www.google.com/maps?q=thailand&output=embed';
+    return;
+  }
+
+  const h = hotels[selectedIndex];
+  selectedName.innerText=h.name;
+  selectedLink.innerText=h.link||'—';
+  mapFrame.src = buildEmbedUrl(h.link||h.name);
+}
+
+zoomBtn.onclick = ()=> mapFrame.focus();
+openBtn.onclick = ()=>{
+  if(!hotels.length) return;
+  const h = hotels[selectedIndex];
+  window.open(h.link || "", '_blank');
+};
+
+/* ------ Itinerary ------ */
+const startDate = new Date(2026,1,21);
+const locations = ['Phuket','Phi Phi','Krabi','Khao Sok','Bangkok'];
+
+function renderItinerary(){
+  nightsContainer.innerHTML='';
+  for(let i=0;i<8;i++){
+    const row = document.createElement('div');
+    row.className='night';
+
+    const label = document.createElement('label');
+    label.innerText = `Feb ${21+i}`;
+
+    const sel = document.createElement('select');
+    sel.innerHTML = `<option value="">—</option>` + 
+      locations.map(loc=>`<option ${itinerary[i]===loc?'selected':''}>${loc}</option>`).join('');
+
+    sel.onchange = async ()=>{
+      itinerary[i]=sel.value;
+      localSaveAll();
+      await saveItineraryData();
+    };
+
+    row.appendChild(label);
+    row.appendChild(sel);
+    nightsContainer.appendChild(row);
+  }
+}
+
+/* ------ Clear All ------ */
+clearStorage.onclick = ()=>{
+  if(confirm("Clear everything?")) {
+    hotels=[];
+    itinerary=Array.from({length:8},()=> '');
+    selectedIndex=0;
+    localSaveAll();
+    saveHotelData().catch(()=>{});
+    saveItineraryData().catch(()=>{});
+    renderList();
     renderItinerary();
+    updateMap();
+  }
+};
 
-    // attempt to sync initial local state to Firestore once SDK loaded
-    // (this will create server docs if they don't exist yet)
-    (async ()=>{
-      // give the firebase script a tiny moment to initialize
-      await new Promise(r => setTimeout(r, 250));
-      if(window.saveHotelData){
-        try{ await saveHotelData(); }catch(e){ console.warn('initial saveHotelData failed',e); }
-      }
-      if(window.saveItineraryData){
-        try{ await saveItineraryData(); }catch(e){ console.warn('initial saveItineraryData failed',e); }
-      }
-    })();
+/* ------ Initial Render ------ */
+renderList();
+renderItinerary();
+updateMap();
 
-  </script>
+</script>
+
+<!-- ============================= -->
+<!-- FIREBASE SYNC (Firestore)     -->
+<!-- ============================= -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import {
+  getFirestore, collection, doc, getDocs,
+  setDoc, deleteDoc, onSnapshot
+} from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBS5earknRLZQWj9kn0qhJFgMfD8EgNY_0",
+  authDomain: "planner-21feb.firebaseapp.com",
+  projectId: "planner-21feb",
+  storageBucket: "planner-21feb.firebasestorage.app",
+  messagingSenderId: "552796038598",
+  appId: "1:552796038598:web:67538b22c836890c257ec7"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const hotelsCol = collection(db,"hotels");
+const itineraryCol = collection(db,"itinerary");
+
+/* ------- Save Hotels to Firestore ------- */
+async function saveHotelData(){
+  try{
+    for(let i=0;i<hotels.length;i++){
+      await setDoc(doc(db,"hotels",String(i)), hotels[i]);
+    }
+    const snap = await getDocs(hotelsCol);
+    const ids = snap.docs.map(d=>d.id);
+    for(const id of ids){
+      const idx = Number(id);
+      if(idx>=hotels.length)
+        await deleteDoc(doc(db,"hotels",id));
+    }
+  }catch(e){ console.warn("saveHotelData error",e); }
+}
+
+/* ------- Save Itinerary to Firestore ------- */
+async function saveItineraryData(){
+  try{
+    for(let i=0;i<itinerary.length;i++){
+      await setDoc(doc(db,"itinerary",String(i)), { place: itinerary[i]||"" });
+    }
+    const snap = await getDocs(itineraryCol);
+    const ids = snap.docs.map(d=>d.id);
+    for(const id of ids){
+      const idx = Number(id);
+      if(idx>=itinerary.length)
+        await deleteDoc(doc(db,"itinerary",id));
+    }
+  }catch(e){ console.warn("saveItineraryData error",e); }
+}
+
+/* ------- Live Sync Hotels ------- */
+onSnapshot(hotelsCol, snap=>{
+  try{
+    const arr = snap.docs
+      .filter(d=>!isNaN(Number(d.id)))
+      .map(d=>({id:Number(d.id), data:d.data()}))
+      .sort((a,b)=>a.id-b.id)
+      .map(x=>x.data);
+
+    const remote = JSON.stringify(arr);
+    const local = JSON.stringify(hotels);
+
+    if(remote!==local){
+      hotels = arr;
+      localSaveAll();
+      if(selectedIndex>=hotels.length) selectedIndex=Math.max(0,hotels.length-1);
+      renderList();
+      updateMap();
+    }
+  }catch(e){ console.warn("snapshot hotel fail",e); }
+});
+
+/* ------- Live Sync Itinerary ------- */
+onSnapshot(itineraryCol, snap=>{
+  try{
+    const arr = snap.docs
+      .filter(d=>!isNaN(Number(d.id)))
+      .map(d=>({id:Number(d.id), data:d.data()}))
+      .sort((a,b)=>a.id-b.id)
+      .map(x=>x.data.place||"");
+
+    const remote = JSON.stringify(arr);
+    const local = JSON.stringify(itinerary);
+
+    if(remote!==local){
+      itinerary = arr.length? arr : Array.from({length:8},()=> "");
+      localSaveAll();
+      renderItinerary();
+    }
+  }catch(e){ console.warn("snapshot itinerary fail",e); }
+});
+
+/* Initial push to Firestore (only if needed) */
+setTimeout(()=>{
+  saveHotelData();
+  saveItineraryData();
+},500);
+
+/* make functions visible to main script */
+window.saveHotelData = saveHotelData;
+window.saveItineraryData = saveItineraryData;
+
+</script>
+
 </body>
 </html>

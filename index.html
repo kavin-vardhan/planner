@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Saily & Kavin's Awesome Honeymoon</title>
+  <style>
+    :root {
+      --bg:#0f1724;
+      --panel:#0b1220;
+      --accent:#06b6d4;
+      --muted:#94a3b8;
+    }
+    html,body {
+      height:100%;
+      margin:0;
+      font-family:Inter,system-ui,Segoe UI,Roboto,Arial;
+      color:#e6eef6;
+      background:linear-gradient(180deg,#071022 0%, #071827 100%);
+    }
+    body {
+      display:flex;
+      flex-direction:column;
+    }
+    header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:16px 24px;
+      background:rgba(255,255,255,0.04);
+      box-shadow:0 4px 12px rgba(0,0,0,0.4);
+    }
+    header h1 {
+      font-size:20px;
+      margin:0;
+      color:var(--accent);
+      letter-spacing:0.5px;
+    }
+    .app {
+      display:flex;
+      flex:1;
+      min-height:0;
+      gap:12px;
+      padding:14px;
+    }
+    .sidebar {
+      width:340px;
+      background:rgba(255,255,255,0.03);
+      border-radius:12px;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      box-shadow:0 6px 18px rgba(2,6,23,0.6);
+    }
+    .header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:12px;
+    }
+    h2 { font-size:16px; margin:0; }
+    button.add {
+      background:var(--accent);
+      border:none;
+      color:#062026;
+      padding:8px 12px;
+      border-radius:8px;
+      font-weight:600;
+      cursor:pointer;
+    }
+    .list { overflow:auto; flex:1; padding-right:6px; }
+    .hotel {
+      padding:10px;
+      border-radius:8px;
+      margin-bottom:8px;
+      cursor:pointer;
+      background:transparent;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .hotel.selected {
+      background:linear-gradient(90deg, rgba(6,182,212,0.12), rgba(6,182,212,0.06));
+      box-shadow:inset 0 0 0 1px rgba(6,182,212,0.06);
+    }
+    .hotel .meta { display:flex; flex-direction:column; }
+    .hotel .name { font-weight:700; }
+    .hotel .sub { color:var(--muted); font-size:12px; }
+    .controls { display:flex; gap:6px; }
+    .small {
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.06);
+      padding:6px;
+      border-radius:6px;
+      color:var(--muted);
+      cursor:pointer;
+    }
+    .mapWrap {
+      flex:1;
+      min-width:0;
+      background:rgba(255,255,255,0.02);
+      border-radius:12px;
+      padding:8px;
+      display:flex;
+      flex-direction:column;
+    }
+    .mapHeader {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:6px 10px;
+    }
+    .mapContainer {
+      flex:1;
+      border-radius:10px;
+      overflow:hidden;
+      background:#111;
+    }
+    iframe {
+      border:0;
+      width:100%;
+      height:100%;
+    }
+    .modalBg {
+      position:fixed;
+      inset:0;
+      background:rgba(2,6,23,0.6);
+      display:none;
+      align-items:center;
+      justify-content:center;
+    }
+    .modal {
+      background:#071428;
+      padding:18px;
+      border-radius:12px;
+      width:420px;
+      box-shadow:0 10px 30px rgba(2,6,23,0.7);
+    }
+    .modal label {
+      display:block;
+      font-size:13px;
+      margin-bottom:6px;
+    }
+    .modal input {
+      width:100%;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.04);
+      background:transparent;
+      color:inherit;
+      margin-bottom:12px;
+    }
+    .modal .row { display:flex; gap:8px; }
+    .modal .row button { flex:1; }
+    .empty { color:var(--muted); text-align:center; padding:20px; }
+
+    /* right panel for itinerary */
+    .itinerary {
+      width:260px;
+      background:rgba(255,255,255,0.03);
+      border-radius:12px;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      box-shadow:0 6px 18px rgba(2,6,23,0.6);
+    }
+    .itinerary h3 {
+      font-size:16px;
+      margin-top:0;
+      margin-bottom:10px;
+      color:var(--accent);
+    }
+    .night {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:8px;
+      background:rgba(255,255,255,0.02);
+      border-radius:8px;
+      padding:6px 8px;
+    }
+    .night label { font-size:13px; }
+    select {
+      background:#0b1220;
+      color:#e6eef6;
+      border-radius:6px;
+      border:1px solid rgba(255,255,255,0.1);
+      padding:4px;
+    }
+
+    @media(max-width:1000px){
+      .app { flex-direction:column; }
+      .sidebar, .itinerary { width:100%; order:2; }
+      .mapWrap { order:1; height:60vh; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Saily & Kavin's Awesome Honeymoon</h1>
+  </header>
+
+  <div class="app">
+    <div class="sidebar" role="navigation">
+      <div class="header">
+        <h2>Hotels</h2>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="small" id="clearStorage" title="Clear saved hotels">Clear</button>
+          <button class="add" id="addBtn">+ Add New Hotel</button>
+        </div>
+      </div>
+      <div class="list" id="hotelList" aria-live="polite">
+        <div class="empty" id="emptyMsg">No hotels yet — click “Add New Hotel” to create one.</div>
+      </div>
+    </div>
+
+    <div class="mapWrap">
+      <div class="mapHeader">
+        <div>
+          <strong id="selectedName">No hotel selected</strong>
+          <div style="font-size:12px;color:var(--muted)" id="selectedLink">—</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="small" id="zoomBtn">Zoom to place</button>
+          <button class="small" id="openBtn">Open in Google Maps</button>
+        </div>
+      </div>
+      <div class="mapContainer">
+        <iframe id="mapFrame" src="https://www.google.com/maps?q=thailand&output=embed" allowfullscreen loading="lazy"></iframe>
+      </div>
+    </div>
+
+    <div class="itinerary">
+      <h3>Night Stay Details</h3>
+      <div id="nightsContainer"></div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modalBg" id="modalBg">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h2 style="margin-top:0;margin-bottom:8px">Add new hotel</h2>
+      <label for="hotelName">Hotel name</label>
+      <input id="hotelName" placeholder="Example: The Grand Plaza" />
+      <label for="hotelLink">Google Maps link or coordinates</label>
+      <input id="hotelLink" placeholder="Paste Google Maps share link, place name or `lat,lng`" />
+      <div class="row">
+        <button id="saveBtn" class="add">Save</button>
+        <button id="cancelBtn" class="small">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const addBtn = document.getElementById('addBtn');
+    const modalBg = document.getElementById('modalBg');
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const hotelListEl = document.getElementById('hotelList');
+    const emptyMsg = document.getElementById('emptyMsg');
+    const nameInput = document.getElementById('hotelName');
+    const linkInput = document.getElementById('hotelLink');
+    const mapFrame = document.getElementById('mapFrame');
+    const selectedName = document.getElementById('selectedName');
+    const selectedLink = document.getElementById('selectedLink');
+    const zoomBtn = document.getElementById('zoomBtn');
+    const openBtn = document.getElementById('openBtn');
+    const clearStorage = document.getElementById('clearStorage');
+
+    let hotels = JSON.parse(localStorage.getItem('hotels_v1') || '[]');
+    let selectedIndex = parseInt(localStorage.getItem('hotels_selected')) || 0;
+
+    function renderList(){
+      hotelListEl.innerHTML = '';
+      if(!hotels.length){
+        hotelListEl.appendChild(emptyMsg);
+        return;
+      }
+      hotels.forEach((h, i) => {
+        const el = document.createElement('div');
+        el.className = 'hotel' + (i===selectedIndex? ' selected':'');
+        el.tabIndex = 0;
+        el.innerHTML = `<div class="meta"><div class="name">${escapeHtml(h.name)}</div><div class="sub">${escapeHtml(h.link)}</div></div>`;
+        const controls = document.createElement('div');
+        controls.className = 'controls';
+        const edit = document.createElement('button'); edit.className='small'; edit.title='Edit'; edit.innerText='Edit';
+        const del = document.createElement('button'); del.className='small'; del.title='Delete'; del.innerText='Delete';
+        controls.appendChild(edit); controls.appendChild(del);
+        el.appendChild(controls);
+
+        el.addEventListener('click', (ev)=>{
+          if(ev.target===del || ev.target===edit) return;
+          selectedIndex = i; saveState(); renderList(); updateMap();
+        });
+        el.addEventListener('keydown',(ev)=>{ if(ev.key==='Enter') { selectedIndex = i; saveState(); renderList(); updateMap(); }});
+
+        edit.addEventListener('click',(ev)=>{ ev.stopPropagation(); openModal(h.name,h.link,i); });
+        del.addEventListener('click',(ev)=>{ ev.stopPropagation(); if(confirm('Delete "'+h.name+'"?')){ hotels.splice(i,1); if(selectedIndex>=hotels.length) selectedIndex = hotels.length-1; saveState(); renderList(); updateMap(); }});
+
+        hotelListEl.appendChild(el);
+      });
+    }
+
+    function openModal(name='', link='', editIndex=null){
+      nameInput.value = name; linkInput.value = link;
+      modalBg.style.display = 'flex';
+      nameInput.focus();
+      saveBtn.onclick = ()=>{
+        const n = nameInput.value.trim(); const l = linkInput.value.trim();
+        if(!n){ alert('Please enter a hotel name'); nameInput.focus(); return; }
+        if(editIndex===null){ hotels.push({name:n, link:l}); selectedIndex = hotels.length-1; }
+        else { hotels[editIndex] = {name:n, link:l}; selectedIndex = editIndex; }
+        saveState(); renderList(); updateMap(); closeModal();
+      };
+    }
+    function closeModal(){ modalBg.style.display='none'; }
+    cancelBtn.onclick = closeModal;
+    modalBg.addEventListener('click', (e)=>{ if(e.target===modalBg) closeModal(); });
+    addBtn.addEventListener('click', ()=> openModal());
+    function saveState(){ localStorage.setItem('hotels_v1', JSON.stringify(hotels)); localStorage.setItem('hotels_selected', selectedIndex); }
+
+    function updateMap(){
+      if(!hotels.length || selectedIndex<0 || selectedIndex>=hotels.length){
+        selectedName.textContent='No hotel selected';
+        selectedLink.textContent='—';
+        mapFrame.src = 'https://www.google.com/maps?q=thailand&output=embed';
+        return;
+      }
+      const h = hotels[selectedIndex];
+      selectedName.textContent = h.name;
+      selectedLink.textContent = h.link || '—';
+      const embed = buildEmbedUrl(h.link || h.name);
+      mapFrame.src = embed;
+    }
+
+    function buildEmbedUrl(raw){
+      if(!raw) return 'https://www.google.com/maps?q=thailand&output=embed';
+      raw = raw.trim();
+      const coord = raw.match(/@?\s*([+-]?\d+\.\d+)\s*,\s*([+-]?\d+\.\d+)/);
+      if(coord){ const q = coord[1]+','+coord[2]; return 'https://www.google.com/maps?q='+encodeURIComponent(q)+'&output=embed'; }
+      const at = raw.match(/@([+-]?\d+\.\d+),([+-]?\d+\.\d+),/);
+      if(at){ const q = at[1]+','+at[2]; return 'https://www.google.com/maps?q='+encodeURIComponent(q)+'&output=embed'; }
+      if(raw.includes('/maps/embed') || raw.includes('maps.google.com/maps')){
+        return raw.includes('output=') ? raw : (raw + (raw.includes('?')? '&output=embed' : '?output=embed'));
+      }
+      if(raw.startsWith('http')){
+        try{ const url = new URL(raw); if(url.hostname.includes('google')){ const q = url.searchParams.get('q') || url.pathname; return 'https://www.google.com/maps?q='+encodeURIComponent(q)+'&output=embed'; } }catch(e){}
+      }
+      return 'https://www.google.com/maps?q='+encodeURIComponent(raw)+'&output=embed';
+    }
+    function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    zoomBtn.addEventListener('click', ()=>{ updateMap(); mapFrame.focus(); });
+    openBtn.addEventListener('click', ()=>{
+      if(!hotels.length) return; const h = hotels[selectedIndex];
+      const url = buildOpenUrl(h.link||h.name);
+      window.open(url,'_blank');
+    });
+    function buildOpenUrl(raw){
+      if(!raw) return 'https://www.google.com/maps';
+      const at = raw.match(/@([+-]?\d+\.\d+),([+-]?\d+\.\d+),/);
+      if(at) return 'https://www.google.com/maps?q='+encodeURIComponent(at[1]+','+at[2]);
+      if(raw.startsWith('http')) return raw;
+      return 'https://www.google.com/maps?q='+encodeURIComponent(raw);
+    }
+
+    clearStorage.addEventListener('click', ()=>{
+      if(confirm('Clear saved hotels?')){
+        hotels=[]; selectedIndex=0; saveState(); renderList(); updateMap();
+      }
+    });
+
+    // ---- Itinerary handling ----
+    const nightsContainer = document.getElementById('nightsContainer');
+    const destinations = ['Phuket','Phi Phi','Krabi','Khao Sok','Bangkok'];
+    const startDate = new Date(2026,1,21); // Feb 21, 2026
+    const itineraryKey = 'honeymoon_itinerary_v1';
+    let itinerary = JSON.parse(localStorage.getItem(itineraryKey) || '[]');
+    if(itinerary.length!==8){ itinerary = Array.from({length:8},()=> ''); }
+
+    function renderItinerary(){
+      nightsContainer.innerHTML = '';
+      for(let i=0;i<8;i++){
+        const nightDate = new Date(startDate);
+        nightDate.setDate(startDate.getDate()+i);
+        const label = nightDate.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+        const div = document.createElement('div');
+        div.className='night';
+        const sel = document.createElement('select');
+        sel.innerHTML = `<option value="">—</option>` + destinations.map(d=>`<option ${itinerary[i]===d?'selected':''}>${d}</option>`).join('');
+        sel.onchange = ()=>{ itinerary[i] = sel.value; localStorage.setItem(itineraryKey, JSON.stringify(itinerary)); };
+        div.innerHTML = `<label>Feb ${21+i}</label>`;
+        div.appendChild(sel);
+        nightsContainer.appendChild(div);
+      }
+    }
+
+    renderList();
+    updateMap();
+    renderItinerary();
+  </script>
+</body>
+</html>

@@ -252,6 +252,9 @@
   </div>
 
   <script>
+    /* -------------------------
+       Local app state & helpers
+       ------------------------- */
     const addBtn = document.getElementById('addBtn');
     const modalBg = document.getElementById('modalBg');
     const saveBtn = document.getElementById('saveBtn');
@@ -266,9 +269,27 @@
     const zoomBtn = document.getElementById('zoomBtn');
     const openBtn = document.getElementById('openBtn');
     const clearStorage = document.getElementById('clearStorage');
+    const nightsContainer = document.getElementById('nightsContainer');
 
-    let hotels = JSON.parse(localStorage.getItem('hotels_v1') || '[]');
-    let selectedIndex = parseInt(localStorage.getItem('hotels_selected')) || 0;
+    // local storage keys
+    const hotelsKey = 'hotels_v1';
+    const selectedKey = 'hotels_selected';
+    const itineraryKey = 'honeymoon_itinerary_v1';
+
+    // local state (selection stays local)
+    let hotels = JSON.parse(localStorage.getItem(hotelsKey) || '[]');
+    let selectedIndex = parseInt(localStorage.getItem(selectedKey)) || 0;
+    let itinerary = JSON.parse(localStorage.getItem(itineraryKey) || '[]');
+    if(!Array.isArray(itinerary) || itinerary.length !== 8) itinerary = Array.from({length:8},()=>'');
+
+    // destination options
+    const destinations = ['Phuket','Phi Phi','Krabi','Khao Sok','Bangkok'];
+    const startDate = new Date(2026,1,21); // Feb 21, 2026
+
+    /* -------------------------
+       Rendering functions
+       ------------------------- */
+    function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
     function renderList(){
       hotelListEl.innerHTML = '';
@@ -289,35 +310,17 @@
         el.appendChild(controls);
 
         el.addEventListener('click', (ev)=>{
-          if(ev.target===del || ev.target===edit) return;
-          selectedIndex = i; saveState(); renderList(); updateMap();
+          if(ev.target===del || ev.target===edit) return; // allow button handlers
+          selectedIndex = i; localSaveSelection(); renderList(); updateMap();
         });
-        el.addEventListener('keydown',(ev)=>{ if(ev.key==='Enter') { selectedIndex = i; saveState(); renderList(); updateMap(); }});
+        el.addEventListener('keydown',(ev)=>{ if(ev.key==='Enter') { selectedIndex = i; localSaveSelection(); renderList(); updateMap(); }});
 
         edit.addEventListener('click',(ev)=>{ ev.stopPropagation(); openModal(h.name,h.link,i); });
-        del.addEventListener('click',(ev)=>{ ev.stopPropagation(); if(confirm('Delete "'+h.name+'"?')){ hotels.splice(i,1); if(selectedIndex>=hotels.length) selectedIndex = hotels.length-1; saveState(); renderList(); updateMap(); }});
+        del.addEventListener('click',(ev)=>{ ev.stopPropagation(); if(confirm('Delete "'+h.name+'"?')){ hotels.splice(i,1); if(selectedIndex>=hotels.length) selectedIndex = hotels.length-1; localSaveAll(); saveHotelData().catch(e=>console.warn('saveHotelData error',e)); renderList(); updateMap(); }});
 
         hotelListEl.appendChild(el);
       });
     }
-
-    function openModal(name='', link='', editIndex=null){
-      nameInput.value = name; linkInput.value = link;
-      modalBg.style.display = 'flex';
-      nameInput.focus();
-      saveBtn.onclick = ()=>{
-        const n = nameInput.value.trim(); const l = linkInput.value.trim();
-        if(!n){ alert('Please enter a hotel name'); nameInput.focus(); return; }
-        if(editIndex===null){ hotels.push({name:n, link:l}); selectedIndex = hotels.length-1; }
-        else { hotels[editIndex] = {name:n, link:l}; selectedIndex = editIndex; }
-        saveState(); renderList(); updateMap(); closeModal();
-      };
-    }
-    function closeModal(){ modalBg.style.display='none'; }
-    cancelBtn.onclick = closeModal;
-    modalBg.addEventListener('click', (e)=>{ if(e.target===modalBg) closeModal(); });
-    addBtn.addEventListener('click', ()=> openModal());
-    function saveState(){ localStorage.setItem('hotels_v1', JSON.stringify(hotels)); localStorage.setItem('hotels_selected', selectedIndex); }
 
     function updateMap(){
       if(!hotels.length || selectedIndex<0 || selectedIndex>=hotels.length){
@@ -348,8 +351,213 @@
       }
       return 'https://www.google.com/maps?q='+encodeURIComponent(raw)+'&output=embed';
     }
-    function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+    /* -------------------------
+       Modal & create/edit hotel
+       ------------------------- */
+    function openModal(name='', link='', editIndex=null){
+      nameInput.value = name || '';
+      linkInput.value = link || '';
+      modalBg.style.display = 'flex';
+      nameInput.focus();
+      saveBtn.onclick = ()=>{
+        const n = nameInput.value.trim(); const l = linkInput.value.trim();
+        if(!n){ alert('Please enter a hotel name'); nameInput.focus(); return; }
+        if(editIndex===null){ hotels.push({name:n, link:l}); selectedIndex = hotels.length-1; }
+        else { hotels[editIndex] = {name:n, link:l}; selectedIndex = editIndex; }
+        localSaveAll();
+        saveHotelData().catch(e=>console.warn('saveHotelData error', e));
+        renderList(); updateMap(); closeModal();
+      };
+    }
+    function closeModal(){ modalBg.style.display='none'; }
+    cancelBtn.onclick = closeModal;
+    modalBg.addEventListener('click', (e)=>{ if(e.target===modalBg) closeModal(); });
+    addBtn.addEventListener('click', ()=> openModal());
+
+    /* -------------------------
+       Local persistence helpers
+       ------------------------- */
+    function localSaveAll(){
+      localStorage.setItem(hotelsKey, JSON.stringify(hotels));
+      localStorage.setItem(selectedKey, selectedIndex);
+      localStorage.setItem(itineraryKey, JSON.stringify(itinerary));
+    }
+    function localSaveSelection(){
+      localStorage.setItem(selectedKey, selectedIndex);
+    }
+
+    /* -------------------------
+       Itinerary rendering & handlers
+       ------------------------- */
+    function renderItinerary(){
+      nightsContainer.innerHTML = '';
+      for(let i=0;i<8;i++){
+        const nightDate = new Date(startDate);
+        nightDate.setDate(startDate.getDate()+i);
+        const div = document.createElement('div');
+        div.className='night';
+        const sel = document.createElement('select');
+        sel.innerHTML = `<option value="">—</option>` + destinations.map(d=>`<option value="${d}" ${itinerary[i]===d?'selected':''}>${d}</option>`).join('');
+        sel.onchange = async ()=>{ itinerary[i] = sel.value; localSaveAll(); try{ await saveItineraryData(); }catch(e){ console.warn('saveItineraryData error',e); } };
+        div.innerHTML = `<label>Feb ${21+i}</label>`;
+        div.appendChild(sel);
+        nightsContainer.appendChild(div);
+      }
+    }
+
+    /* -------------------------
+       FIRESTORE integration
+       ------------------------- */
+  </script>
+
+  <!-- Firebase SDK (module) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, setDoc, doc, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+    // ----- paste / confirm your firebase config here -----
+    const firebaseConfig = {
+      apiKey: "AIzaSyBS5earknRLZQWj9kn0qhJFgMfD8EgNY_0",
+      authDomain: "planner-21feb.firebaseapp.com",
+      projectId: "planner-21feb",
+      storageBucket: "planner-21feb.firebasestorage.app",
+      messagingSenderId: "552796038598",
+      appId: "1:552796038598:web:67538b22c836890c257ec7"
+    };
+    // ----------------------------------------------------
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    console.log("Firebase initialized for project:", firebaseConfig.projectId);
+
+    // Firestore collection refs
+    const hotelsCol = collection(db, "hotels");
+    const itineraryCol = collection(db, "itinerary");
+
+    // Helper: write all hotels (indexed docs 0,1,2...)
+    async function saveHotelData(){
+      try{
+        // set each hotel as doc "0", "1", ...
+        for(let i=0;i<hotels.length;i++){
+          await setDoc(doc(db, "hotels", i.toString()), hotels[i]);
+        }
+        // delete extra documents if they exist on server beyond current length
+        const serverDocs = await getDocs(hotelsCol);
+        const serverIds = serverDocs.docs.map(d=>d.id);
+        for(const id of serverIds){
+          const idx = parseInt(id,10);
+          if(!Number.isNaN(idx) && idx >= hotels.length){
+            await deleteDoc(doc(db,"hotels", id));
+          }
+        }
+      }catch(e){
+        console.warn("saveHotelData failed:",e);
+        throw e;
+      }
+    }
+
+    // Helper: write itinerary (docs 0..7 with {place})
+    async function saveItineraryData(){
+      try{
+        for(let i=0;i<itinerary.length;i++){
+          await setDoc(doc(db,"itinerary", i.toString()), { place: itinerary[i] || "" });
+        }
+        // cleanup extra docs
+        const serverDocs = await getDocs(itineraryCol);
+        const serverIds = serverDocs.docs.map(d=>d.id);
+        for(const id of serverIds){
+          const idx = parseInt(id,10);
+          if(!Number.isNaN(idx) && idx >= itinerary.length){
+            await deleteDoc(doc(db,"itinerary", id));
+          }
+        }
+      }catch(e){
+        console.warn("saveItineraryData failed:",e);
+        throw e;
+      }
+    }
+
+    // Read live updates from Firestore and merge into local
+    const unsubscribeHotels = onSnapshot(hotelsCol, (snapshot) => {
+      try{
+        // Build array sorted by numeric id
+        const docs = snapshot.docs
+          .filter(d => !isNaN(Number(d.id)))
+          .map(d => ({ id: Number(d.id), data: d.data() }))
+          .sort((a,b)=>a.id-b.id)
+          .map(x=>x.data);
+
+        // If server-side list differs from local, update local array and persist locally
+        const serverJson = JSON.stringify(docs || []);
+        const localJson = JSON.stringify(hotels || []);
+        if(serverJson !== localJson){
+          hotels = docs || [];
+          localSaveAll();
+          // Only update UI list/iframe selection if selection index still valid
+          if(selectedIndex >= hotels.length) selectedIndex = Math.max(0, hotels.length-1);
+          renderList();
+          updateMap();
+        }
+      }catch(e){
+        console.warn("onSnapshot hotels processing error:",e);
+      }
+    }, (err)=> {
+      console.warn("onSnapshot hotels error:", err);
+    });
+
+    const unsubscribeItinerary = onSnapshot(itineraryCol, (snapshot) => {
+      try{
+        // Build array sorted by numeric id
+        const docs = snapshot.docs
+          .filter(d => !isNaN(Number(d.id)))
+          .map(d => ({ id: Number(d.id), data: d.data() }))
+          .sort((a,b)=>a.id-b.id)
+          .map(x => (x.data && typeof x.data.place !== 'undefined') ? x.data.place : '');
+
+        const serverJson = JSON.stringify(docs || []);
+        const localJson = JSON.stringify(itinerary || []);
+        if(serverJson !== localJson){
+          itinerary = docs.length ? docs : Array.from({length:8},()=> '');
+          localSaveAll();
+          renderItinerary();
+        }
+      }catch(e){
+        console.warn("onSnapshot itinerary processing error:",e);
+      }
+    }, (err) => {
+      console.warn("onSnapshot itinerary error:", err);
+    });
+
+    // Expose save functions to global for use in the main script
+    window.saveHotelData = saveHotelData;
+    window.saveItineraryData = saveItineraryData;
+
+  </script>
+
+  <script>
+    /* -------------------------
+       Hook up remaining UI pieces
+       ------------------------- */
+
+    // wire up clear
+    clearStorage.addEventListener('click', ()=>{
+      if(confirm('Clear saved hotels and itinerary locally? (This will also clear synced data when connection active)')){
+        hotels = [];
+        itinerary = Array.from({length:8},()=> '');
+        selectedIndex = 0;
+        localSaveAll();
+        // try to remove server docs too
+        if(window.saveHotelData && window.saveItineraryData){
+          // save empty arrays to server (which will remove extra docs)
+          saveHotelData().catch(e=>console.warn(e));
+          saveItineraryData().catch(e=>console.warn(e));
+        }
+        renderList(); updateMap(); renderItinerary();
+      }
+    });
+
+    // zoom / open
     zoomBtn.addEventListener('click', ()=>{ updateMap(); mapFrame.focus(); });
     openBtn.addEventListener('click', ()=>{
       if(!hotels.length) return; const h = hotels[selectedIndex];
@@ -364,85 +572,24 @@
       return 'https://www.google.com/maps?q='+encodeURIComponent(raw);
     }
 
-    clearStorage.addEventListener('click', ()=>{
-      if(confirm('Clear saved hotels?')){
-        hotels=[]; selectedIndex=0; saveState(); renderList(); updateMap();
-      }
-    });
-
-    // ---- Itinerary handling ----
-    const nightsContainer = document.getElementById('nightsContainer');
-    const destinations = ['Phuket','Phi Phi','Krabi','Khao Sok','Bangkok'];
-    const startDate = new Date(2026,1,21); // Feb 21, 2026
-    const itineraryKey = 'honeymoon_itinerary_v1';
-    let itinerary = JSON.parse(localStorage.getItem(itineraryKey) || '[]');
-    if(itinerary.length!==8){ itinerary = Array.from({length:8},()=> ''); }
-
-    function renderItinerary(){
-      nightsContainer.innerHTML = '';
-      for(let i=0;i<8;i++){
-        const nightDate = new Date(startDate);
-        nightDate.setDate(startDate.getDate()+i);
-        const label = nightDate.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
-        const div = document.createElement('div');
-        div.className='night';
-        const sel = document.createElement('select');
-        sel.innerHTML = `<option value="">—</option>` + destinations.map(d=>`<option ${itinerary[i]===d?'selected':''}>${d}</option>`).join('');
-        sel.onchange = ()=>{ itinerary[i] = sel.value; localStorage.setItem(itineraryKey, JSON.stringify(itinerary)); };
-        div.innerHTML = `<label>Feb ${21+i}</label>`;
-        div.appendChild(sel);
-        nightsContainer.appendChild(div);
-      }
-    }
-
+    // initial render calls
     renderList();
     updateMap();
     renderItinerary();
+
+    // attempt to sync initial local state to Firestore once SDK loaded
+    // (this will create server docs if they don't exist yet)
+    (async ()=>{
+      // give the firebase script a tiny moment to initialize
+      await new Promise(r => setTimeout(r, 250));
+      if(window.saveHotelData){
+        try{ await saveHotelData(); }catch(e){ console.warn('initial saveHotelData failed',e); }
+      }
+      if(window.saveItineraryData){
+        try{ await saveItineraryData(); }catch(e){ console.warn('initial saveItineraryData failed',e); }
+      }
+    })();
+
   </script>
-  <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-  import { getFirestore, collection, getDocs, setDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-  apiKey: "AIzaSyBS5earknRLZQWj9kn0qhJFgMfD8EgNY_0",
-  authDomain: "planner-21feb.firebaseapp.com",
-  projectId: "planner-21feb",
-  storageBucket: "planner-21feb.firebasestorage.app",
-  messagingSenderId: "552796038598",
-  appId: "1:552796038598:web:67538b22c836890c257ec7"
-};
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // Listen for live updates
-  onSnapshot(collection(db, "hotels"), (snapshot) => {
-    hotels = snapshot.docs.map(doc => doc.data());
-    renderList();
-    updateMap();
-  });
-
-  onSnapshot(collection(db, "itinerary"), (snapshot) => {
-    itinerary = snapshot.docs.map(doc => doc.data().place);
-    renderItinerary();
-  });
-
-  // When saving hotel or itinerary, update Firestore instead of localStorage
-  async function saveHotelData() {
-    for (let i = 0; i < hotels.length; i++) {
-      await setDoc(doc(db, "hotels", i.toString()), hotels[i]);
-    }
-  }
-
-  async function saveItineraryData() {
-    for (let i = 0; i < itinerary.length; i++) {
-      await setDoc(doc(db, "itinerary", i.toString()), { place: itinerary[i] });
-    }
-  }
-
-  // Modify your existing saveState() to call saveHotelData() and saveItineraryData()
-</script>
 </body>
 </html>
-
-

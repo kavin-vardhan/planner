@@ -399,5 +399,49 @@
     updateMap();
     renderItinerary();
   </script>
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, setDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_APP.firebaseapp.com",
+    projectId: "YOUR_APP",
+    storageBucket: "YOUR_APP.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Listen for live updates
+  onSnapshot(collection(db, "hotels"), (snapshot) => {
+    hotels = snapshot.docs.map(doc => doc.data());
+    renderList();
+    updateMap();
+  });
+
+  onSnapshot(collection(db, "itinerary"), (snapshot) => {
+    itinerary = snapshot.docs.map(doc => doc.data().place);
+    renderItinerary();
+  });
+
+  // When saving hotel or itinerary, update Firestore instead of localStorage
+  async function saveHotelData() {
+    for (let i = 0; i < hotels.length; i++) {
+      await setDoc(doc(db, "hotels", i.toString()), hotels[i]);
+    }
+  }
+
+  async function saveItineraryData() {
+    for (let i = 0; i < itinerary.length; i++) {
+      await setDoc(doc(db, "itinerary", i.toString()), { place: itinerary[i] });
+    }
+  }
+
+  // Modify your existing saveState() to call saveHotelData() and saveItineraryData()
+</script>
 </body>
 </html>
+

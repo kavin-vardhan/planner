@@ -440,7 +440,18 @@
         // location tag on separate line
         const tagEl = document.createElement('span'); tagEl.className = 'tag';
         if(h.location) { tagEl.textContent = h.location; tagEl.classList.add(h.location.toLowerCase().replace(/\s+/g,'')); tag.appendChild(tagEl); }
-        const sub2 = document.createElement('div'); sub2.className = 'sub'; sub2.textContent = h.link || '';
+        const sub2 = document.createElement('div'); sub2.className = 'sub'; 
+        if (h.link && h.link.trim()) {
+          const cleanLink = document.createElement('span');
+          cleanLink.textContent = "📍 View on Google Maps";
+          cleanLink.style.cursor = "pointer";
+          cleanLink.style.textDecoration = "underline";
+          cleanLink.onclick = (e) => {
+            e.stopPropagation();
+            window.open(h.link, "_blank");
+          };
+          sub2.appendChild(cleanLink);
+        }
         meta.appendChild(nm);
         meta.appendChild(tag);
         meta.appendChild(sub2);
@@ -762,3 +773,4 @@
   </script>
 </body>
 </html>
+

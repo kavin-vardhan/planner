@@ -6,66 +6,90 @@
   <title>Saily & Kavin's Awesome Honeymoon</title>
   <style>
     :root{
-      --bg:#0f1724; --panel:#0b1220; --accent:#06b6d4; --muted:#94a3b8;
+      --bg:#071827;
+      --panel:#0b1220;
+      --accent:#06b6d4;
+      --muted:#94a3b8;
       --phuket:#f97316; --phiphi:#06b6d4; --krabi:#22c55e; --khaosok:#eab308; --bangkok:#a855f7;
+      --card-bg: rgba(255,255,255,0.02);
+      --card-radius: 10px;
     }
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;color:#e6eef6;background:linear-gradient(180deg,#071022 0%, #071827 100%);}
-    body{display:flex;flex-direction:column}
-    header{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:rgba(255,255,255,0.04);box-shadow:0 4px 12px rgba(0,0,0,0.4)}
-    header h1{font-size:20px;margin:0;color:var(--accent)}
-    .app{display:flex;flex:1;min-height:0;gap:12px;padding:14px}
-    .sidebar{width:340px;background:rgba(255,255,255,0.03);border-radius:12px;padding:14px;display:flex;flex-direction:column;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
-    .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-    h2{font-size:16px;margin:0}
-    button.add{background:var(--accent);border:none;color:#062026;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer}
-    .list{overflow:auto;flex:1;padding-right:6px}
-    .hotel{padding:10px;border-radius:8px;margin-bottom:8px;cursor:pointer;background:transparent;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-    .hotel.selected{background:linear-gradient(90deg, rgba(6,182,212,0.12), rgba(6,182,212,0.06));box-shadow:inset 0 0 0 1px rgba(6,182,212,0.06)}
-    .hotel .meta{display:flex;flex-direction:column;flex:1}
-    .hotel .name{font-weight:700}
-    .tag{display:inline-block;margin-top:6px;padding:2px 8px;border-radius:8px;font-size:12px;font-weight:700;color:#000;width:max-content}
-    .sub{color:var(--muted);font-size:12px;margin-top:6px}
-    .controls{display:flex;flex-direction:column;gap:6px}
-    .controls .row{display:flex;gap:6px}
-    .small{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:6px 8px;border-radius:6px;color:var(--muted);cursor:pointer;font-size:12px}
-    .small.disabled{opacity:0.35;cursor:not-allowed}
-    .heart{font-size:16px;line-height:1;padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);cursor:pointer;background:transparent}
-    .heart.liked{color:#ff4d6d;border-color:rgba(255,77,109,0.18);box-shadow:0 6px 18px rgba(255,77,109,0.06)}
-    .mapWrap{flex:1;min-width:0;background:rgba(255,255,255,0.02);border-radius:12px;padding:8px;display:flex;flex-direction:column}
-    .mapHeader{display:flex;align-items:center;justify-content:space-between;padding:6px 10px}
-    .mapContainer{flex:1;border-radius:10px;overflow:hidden;background:#111}
-    iframe{border:0;width:100%;height:100%}
-    .modalBg{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center}
-    .modal{background:#071428;padding:18px;border-radius:12px;width:420px;box-shadow:0 10px 30px rgba(2,6,23,0.7)}
-    .modal label{display:block;font-size:13px;margin-bottom:6px}
-    .modal input,.modal select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;margin-bottom:12px}
-    .modal .row{display:flex;gap:8px}
-    .modal .row button{flex:1}
-    .empty{color:var(--muted);text-align:center;padding:20px}
-    .itinerary{width:300px;background:rgba(255,255,255,0.03);border-radius:12px;padding:14px;display:flex;flex-direction:column;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
-    .itinerary h3{font-size:16px;margin-top:0;margin-bottom:10px;color:var(--accent)}
-    .night{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;background:rgba(255,255,255,0.02);border-radius:8px;padding:6px 8px}
-    .night label{font-size:13px}
-    select{background:#0b1220;color:#e6eef6;border-radius:6px;border:1px solid rgba(255,255,255,0.1);padding:4px}
-    .summary{margin-top:10px;color:var(--muted);font-size:13px;line-height:1.4}
-    .comparePanel{margin-top:10px;background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;color:var(--muted)}
-    @media(max-width:1000px){.app{flex-direction:column}.sidebar,.itinerary{width:100%;order:2}.mapWrap{order:1;height:60vh}}
+    html,body{ height:100%; margin:0; font-family:Inter, system-ui, Arial; color:#e6eef6; background:linear-gradient(180deg,#071022 0%, #071827 100%); }
+    header{ display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:rgba(255,255,255,0.03); box-shadow:0 4px 12px rgba(0,0,0,0.4); }
+    header h1{ margin:0; font-size:18px; color:var(--accent); }
+
+    .app { display:flex; gap:12px; padding:14px; min-height:calc(100vh - 72px); box-sizing:border-box; }
+    .sidebar { width:340px; background:var(--card-bg); border-radius:12px; padding:14px; box-shadow:0 6px 18px rgba(2,6,23,0.6); display:flex; flex-direction:column; }
+    .mapWrap { flex:1; background:var(--card-bg); border-radius:12px; padding:10px; display:flex; flex-direction:column; }
+    .itinerary { width:260px; background:var(--card-bg); border-radius:12px; padding:14px; display:flex; flex-direction:column; box-shadow:0 6px 18px rgba(2,6,23,0.6); }
+
+    .header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+    h2{ font-size:16px; margin:0; }
+    button.add { background:var(--accent); border:none; color:#062026; padding:8px 12px; border-radius:8px; font-weight:600; cursor:pointer; }
+
+    .list{ overflow:auto; flex:1; padding-right:6px; }
+    .hotel { padding:10px; border-radius:8px; margin-bottom:8px; cursor:pointer; background:transparent; display:flex; align-items:flex-start; justify-content:space-between; gap:10px; transition: box-shadow .18s, transform .18s; position:relative; }
+    .hotel.selected{ background:linear-gradient(90deg, rgba(6,182,212,0.06), rgba(6,182,212,0.03)); box-shadow:inset 0 0 0 1px rgba(6,182,212,0.03); }
+    .hotel .meta{ display:flex; flex-direction:column; flex:1; }
+    .hotel .name{ font-weight:700; color:#eaf6f7; }
+    .hotel .sub{ color:var(--muted); font-size:12px; margin-top:6px; }
+
+    .controls{ display:flex; flex-direction:column; gap:6px; align-items:flex-end; }
+    .controls .row{ display:flex; gap:6px; }
+    .small{ background:transparent; border:1px solid rgba(255,255,255,0.06); padding:6px 8px; border-radius:6px; color:var(--muted); cursor:pointer; font-size:12px; }
+    .small.disabled{ opacity:0.35; cursor:not-allowed; }
+
+    .heart{ font-size:16px; width:40px; height:36px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); display:flex;align-items:center;justify-content:center; cursor:pointer; background:transparent; color:var(--muted); }
+    .heart.liked{ color:#ff4d6d; box-shadow:0 6px 18px rgba(255,77,109,0.06); border-color:rgba(255,77,109,0.18); }
+
+    .tag{ display:inline-block; margin-top:6px; padding:4px 8px; border-radius:8px; font-size:12px; font-weight:700; color:#000; }
+    .tag.phuket{ background:var(--phuket); } .tag.phiphi{ background:var(--phiphi); } .tag.krabi{ background:var(--krabi); } .tag.khaosok{ background:var(--khaosok); } .tag.bangkok{ background:var(--bangkok); }
+
+    /* Expanded panel inside card */
+    .hotel-extra { max-height:0; overflow:hidden; transition:max-height .32s ease, padding .32s ease; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:6px; margin-top:10px; padding:0 8px; }
+    .hotel.expanded .hotel-extra { padding:10px 8px; max-height:520px; }
+
+    /* Tropical style inside expanded panel */
+    .insights { display:flex; gap:12px; flex-wrap:wrap; }
+    .insightBox { background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); padding:8px; border-radius:8px; min-width:200px; box-shadow:0 8px 20px rgba(2,6,20,0.25); }
+    .insightBox h4{ margin:0 0 6px 0; font-size:13px; color:var(--accent); }
+    .insightItem{ font-size:13px; color:#e6eef6; margin:6px 0; display:flex; justify-content:space-between; gap:8px; align-items:center; }
+    .insightNote{ font-size:12px; color:var(--muted); margin-top:6px; }
+
+    /* Show more toggle */
+    .showMore{ margin-top:6px; color:var(--accent); cursor:pointer; font-weight:700; font-size:13px; }
+
+    /* Map area */
+    .mapHeader{ display:flex; align-items:center; justify-content:space-between; padding:6px 10px; }
+    .mapContainer{ flex:1; border-radius:10px; overflow:hidden; background:#111; min-height:420px; }
+    iframe{ border:0; width:100%; height:100%; }
+
+    /* Itinerary */
+    .night{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; background:rgba(255,255,255,0.02); border-radius:8px; padding:6px 8px; }
+    .night label{ font-size:13px; color:var(--muted); }
+
+    @media(max-width:960px){
+      .app{ flex-direction:column; }
+      .sidebar, .itinerary { width:100%; }
+      .mapContainer{ min-height:300px; }
+    }
   </style>
 </head>
 <body>
-  <header><h1>Saily & Kavin's Awesome Honeymoon</h1></header>
+  <header>
+    <h1>Saily & Kavin's Awesome Honeymoon</h1>
+  </header>
 
   <div class="app">
     <div class="sidebar">
       <div class="header">
         <h2>Hotels</h2>
         <div style="display:flex;gap:8px;align-items:center">
-          <button class="small" id="clearStorage">Clear</button>
+          <button class="small" id="clearStorage" title="Clear saved hotels">Clear</button>
           <button class="add" id="addBtn">+ Add New Hotel</button>
         </div>
       </div>
-
-      <div class="list" id="hotelList">
+      <div class="list" id="hotelList" aria-live="polite">
         <div class="empty" id="emptyMsg">No hotels yet — click “Add New Hotel” to create one.</div>
       </div>
     </div>
@@ -78,597 +102,663 @@
         </div>
         <div style="display:flex;gap:8px">
           <button class="small" id="zoomBtn">Zoom</button>
-          <button class="small" id="openBtn">Open Maps</button>
+          <button class="small" id="openBtn">Open in Google Maps</button>
         </div>
       </div>
-
-      <div id="comparePanel" class="comparePanel" style="display:none"></div>
-
       <div class="mapContainer">
-        <iframe id="mapFrame" src="https://www.google.com/maps?q=thailand&output=embed" allowfullscreen></iframe>
+        <iframe id="mapFrame" src="https://www.google.com/maps?q=thailand&output=embed" allowfullscreen loading="lazy"></iframe>
       </div>
     </div>
 
     <div class="itinerary">
       <h3>Night Stay Details</h3>
       <div id="nightsContainer"></div>
-      <div id="travelSummary" class="summary"></div>
     </div>
   </div>
 
   <!-- Modal -->
-  <div class="modalBg" id="modalBg">
-    <div class="modal" role="dialog" aria-modal="true">
-      <h2 style="margin-top:0;margin-bottom:8px">Add / Edit hotel</h2>
-
-      <label>Hotel name</label>
-      <input id="hotelName" placeholder="e.g., Hilton Phuket">
-
-      <label>Google Maps link or coordinates</label>
-      <input id="hotelLink" placeholder="maps link or lat,lng">
-
-      <label>Booking link (Agoda / MMT / etc.)</label>
-      <input id="hotelBooking" placeholder="https://...">
-
-      <label>Location</label>
-      <select id="hotelLocation">
+  <div class="modalBg" id="modalBg" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.6);align-items:center;justify-content:center;">
+    <div class="modal" role="dialog" aria-modal="true" style="background:#071428;padding:18px;border-radius:12px;width:420px;box-shadow:0 10px 30px rgba(2,6,23,0.7);color:#e6eef6;">
+      <h2 style="margin-top:0;margin-bottom:8px">Add new hotel</h2>
+      <label for="hotelName">Hotel name</label>
+      <input id="hotelName" placeholder="Example: The Grand Plaza" style="width:100%;padding:8px;border-radius:8px;border:1px solid #222;background:transparent;color:inherit;margin-bottom:8px" />
+      <label for="hotelLink">Google Maps link or coordinates</label>
+      <input id="hotelLink" placeholder="Paste Google Maps share link, place name or `lat,lng`" style="width:100%;padding:8px;border-radius:8px;border:1px solid #222;background:transparent;color:inherit;margin-bottom:8px" />
+      <label for="hotelBooking">Booking link (optional)</label>
+      <input id="hotelBooking" placeholder="https://..." style="width:100%;padding:8px;border-radius:8px;border:1px solid #222;background:transparent;color:inherit;margin-bottom:8px" />
+      <label for="hotelLocation">Location</label>
+      <select id="hotelLocation" style="width:100%;padding:8px;border-radius:8px;border:1px solid #222;background:transparent;color:inherit;margin-bottom:12px">
         <option value="">—</option>
-        <option>Phuket</option><option>Phi Phi</option><option>Krabi</option><option>Khao Sok</option><option>Bangkok</option>
+        <option>Phuket</option>
+        <option>Phi Phi</option>
+        <option>Krabi</option>
+        <option>Khao Sok</option>
+        <option>Bangkok</option>
       </select>
-
-      <div class="row">
-        <button class="add" id="saveBtn">Save</button>
-        <button class="small" id="cancelBtn">Cancel</button>
+      <div style="display:flex;gap:8px">
+        <button id="saveBtn" class="add" style="flex:1">Save</button>
+        <button id="cancelBtn" class="small" style="flex:1">Cancel</button>
       </div>
     </div>
   </div>
 
   <script>
-  /* -------------------------
-     Local UI state & helpers
-     ------------------------- */
-  const addBtn = document.getElementById('addBtn');
-  const modalBg = document.getElementById('modalBg');
-  const saveBtn = document.getElementById('saveBtn');
-  const cancelBtn = document.getElementById('cancelBtn');
+    // ---- State + elements ----
+    const addBtn = document.getElementById('addBtn');
+    const modalBg = document.getElementById('modalBg');
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const nameInput = document.getElementById('hotelName');
+    const linkInput = document.getElementById('hotelLink');
+    const bookingInput = document.getElementById('hotelBooking');
+    const locationSelect = document.getElementById('hotelLocation');
+    const hotelListEl = document.getElementById('hotelList');
+    const emptyMsg = document.getElementById('emptyMsg');
+    const mapFrame = document.getElementById('mapFrame');
+    const selectedName = document.getElementById('selectedName');
+    const selectedLink = document.getElementById('selectedLink');
+    const zoomBtn = document.getElementById('zoomBtn');
+    const openBtn = document.getElementById('openBtn');
+    const nightsContainer = document.getElementById('nightsContainer');
+    const clearStorage = document.getElementById('clearStorage');
 
-  const nameInput = document.getElementById('hotelName');
-  const linkInput = document.getElementById('hotelLink');
-  const bookingInput = document.getElementById('hotelBooking');
-  const locationInput = document.getElementById('hotelLocation');
+    const hotelsKey = 'hotels_v1';
+    const selectedKey = 'hotels_selected';
+    const itineraryKey = 'honeymoon_itinerary_v1';
 
-  const hotelListEl = document.getElementById('hotelList');
-  const emptyMsg = document.getElementById('emptyMsg');
+    let hotels = JSON.parse(localStorage.getItem(hotelsKey) || '[]');
+    let selectedIndex = parseInt(localStorage.getItem(selectedKey)) || 0;
+    let itinerary = JSON.parse(localStorage.getItem(itineraryKey) || '[]');
+    if(!Array.isArray(itinerary) || itinerary.length !== 8) itinerary = Array.from({length:8},()=>'');
 
-  const nightsContainer = document.getElementById('nightsContainer');
-  const travelSummaryEl = document.getElementById('travelSummary');
-  const comparePanel = document.getElementById('comparePanel');
+    const destinations = ['Phuket','Phi Phi','Krabi','Khao Sok','Bangkok'];
+    const startDate = new Date(2026,1,21); // Feb 21, 2026
 
-  const selectedName = document.getElementById('selectedName');
-  const selectedLink = document.getElementById('selectedLink');
-  const mapFrame = document.getElementById('mapFrame');
-
-  const clearStorage = document.getElementById('clearStorage');
-  const zoomBtn = document.getElementById('zoomBtn');
-  const openBtn = document.getElementById('openBtn');
-
-  const hotelsKey = 'hotels_v1';
-  const selectedKey = 'hotels_selected';
-  const itineraryKey = 'honeymoon_itinerary_v1';
-
-  let hotels = JSON.parse(localStorage.getItem(hotelsKey) || '[]');
-  let selectedIndex = parseInt(localStorage.getItem(selectedKey) || '0');
-  let itinerary = JSON.parse(localStorage.getItem(itineraryKey) || '[]');
-  if(!Array.isArray(itinerary) || itinerary.length !== 8) itinerary = Array.from({length:8},()=>'');
-
-  const locations = ['Phuket','Phi Phi','Krabi','Khao Sok','Bangkok'];
-  const startDate = new Date(2026,1,21);
-
-  // Maps API readiness
-  let mapsLoaded = false;
-  function markMapsLoaded(){ mapsLoaded = true; computeTravelSummary(); }
-
-  // helper HTML escape
-  function escapeHtml(s){ return String(s||'').replace(/[&<>]/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;' }[c])); }
-
-  function localSaveAll(){ localStorage.setItem(hotelsKey, JSON.stringify(hotels)); localStorage.setItem(selectedKey, selectedIndex); localStorage.setItem(itineraryKey, JSON.stringify(itinerary)); }
-  function localSaveSelection(){ localStorage.setItem(selectedKey, selectedIndex); }
-
-  /* -------------------------
-     Render hotels list
-     ------------------------- */
-  function renderList(){
-    hotelListEl.innerHTML = '';
-    if(!hotels.length){ hotelListEl.appendChild(emptyMsg); return; }
-
-    hotels.forEach((h,i)=>{
-      const el = document.createElement('div');
-      el.className = 'hotel' + (i===selectedIndex? ' selected':'');
-
-      const meta = document.createElement('div');
-      meta.className = 'meta';
-
-      const nameLine = document.createElement('div');
-      nameLine.className = 'name';
-      nameLine.innerHTML = escapeHtml(h.name || '');
-
-      const tag = document.createElement('div');
-      tag.className = 'tag';
-      const color = h.location==='Phuket' ? 'var(--phuket)' :
-                    h.location==='Phi Phi' ? 'var(--phiphi)' :
-                    h.location==='Krabi' ? 'var(--krabi)' :
-                    h.location==='Khao Sok' ? 'var(--khaosok)' :
-                    h.location==='Bangkok' ? 'var(--bangkok)' : '#999';
-      tag.style.background = color;
-      tag.textContent = h.location || '';
-      tag.style.display = h.location ? 'inline-block' : 'none';
-
-      const sub = document.createElement('div');
-      sub.className = 'sub';
-      sub.textContent = h.link || '';
-
-      meta.appendChild(nameLine);
-      meta.appendChild(tag);
-      meta.appendChild(sub);
-
-      const controls = document.createElement('div');
-      controls.className = 'controls';
-
-      // heart favorite
-      const heartBtn = document.createElement('button');
-      heartBtn.className = 'heart' + (h.favorite? ' liked' : '');
-      heartBtn.innerHTML = h.favorite ? '❤' : '♡';
-      heartBtn.title = 'Mark as favourite';
-      heartBtn.onclick = async (ev)=>{ ev.stopPropagation(); h.favorite = !h.favorite; heartBtn.innerHTML = h.favorite? '❤':'♡'; heartBtn.classList.toggle('liked', h.favorite); localSaveAll(); await saveHotelData().catch(()=>{}); };
-
-      // go button
-      const goBtn = document.createElement('button');
-      goBtn.className = 'small';
-      goBtn.innerText = 'Go';
-      if(h.booking && h.booking.trim()){
-        goBtn.onclick = (ev)=>{ ev.stopPropagation(); window.open(h.booking,'_blank'); };
-      } else {
-        goBtn.classList.add('disabled');
-      }
-
-      // edit
-      const editBtn = document.createElement('button');
-      editBtn.className = 'small';
-      editBtn.innerText = 'Edit';
-      editBtn.onclick = (ev)=>{ ev.stopPropagation(); openModal(h.name,h.link,i,h.booking,h.location,h.favorite); };
-
-      // delete
-      const delBtn = document.createElement('button');
-      delBtn.className = 'small';
-      delBtn.innerText = 'Delete';
-      delBtn.onclick = async (ev)=>{ ev.stopPropagation(); if(confirm(`Delete "${h.name}"?`)){ hotels.splice(i,1); if(selectedIndex>=hotels.length) selectedIndex = Math.max(0,hotels.length-1); localSaveAll(); await saveHotelData().catch(()=>{}); renderList(); updateMap(); computeTravelSummary(); } };
-
-      // arrangement: heart at top, then row of buttons
-      controls.appendChild(heartBtn);
-      const row = document.createElement('div'); row.className='row';
-      row.appendChild(goBtn); row.appendChild(editBtn); row.appendChild(delBtn);
-      controls.appendChild(row);
-
-      el.appendChild(meta);
-      el.appendChild(controls);
-
-      // normal click: select (local)
-      el.onclick = (ev)=>{
-        // if ctrl/meta click => set comparison target
-        if(ev.ctrlKey || ev.metaKey){
-          // set comparison between selectedIndex and this index (if different)
-          if(typeof compareTarget === 'number' && compareTarget === i){
-            compareTarget = null; // unselect if same
-          } else if(typeof selectedIndex === 'number' && selectedIndex !== i){
-            compareTarget = i;
-            computeCompare(selectedIndex, compareTarget);
-          } else {
-            // if no base yet, set selectedIndex
-            selectedIndex = i; localSaveSelection(); renderList(); updateMap();
-            compareTarget = null;
-          }
-        } else {
-          selectedIndex = i; localSaveSelection(); compareTarget = null; renderList(); updateMap(); computeTravelSummary();
-        }
-      };
-
-      hotelListEl.appendChild(el);
-    });
-  }
-
-  /* -------------------------
-     Modal open/save
-     ------------------------- */
-  function openModal(name='', link='', index=null, booking='', location='', favorite=false){
-    nameInput.value = name || '';
-    linkInput.value = link || '';
-    bookingInput.value = booking || '';
-    locationInput.value = location || '';
-    modalBg.style.display = 'flex';
-    nameInput.focus();
-
-    saveBtn.onclick = async ()=>{
-      const n = nameInput.value.trim();
-      if(!n){ alert('Please enter a hotel name'); return; }
-      const entry = { name: n, link: linkInput.value.trim(), booking: bookingInput.value.trim(), location: locationInput.value || '', favorite: !!favorite };
-      if(index === null){ hotels.push(entry); selectedIndex = hotels.length-1; }
-      else { hotels[index] = entry; selectedIndex = index; }
-      localSaveAll();
-      await saveHotelData().catch(()=>{});
-      renderList(); updateMap(); computeTravelSummary();
-      closeModal();
+    // Pre-defined important points per city (lat,lng) and labels
+    const CITY_POINTS = {
+      "Phuket": [
+        { id:'hkt', label:'Phuket Airport (HKT)', lat:8.1132, lng:98.3164, type:'airport' },
+        { id:'rassada', label:'Rassada Pier', lat:7.8840, lng:98.4100, type:'pier' },
+        { id:'seaangel', label:'Sea Angel Pier', lat:8.0536, lng:98.3386, type:'pier' },
+        { id:'chalong', label:'Chalong Pier', lat:7.8144, lng:98.3414, type:'pier' },
+        { id:'patong', label:'Patong Beach', lat:7.8969, lng:98.2970, type:'beach' },
+        { id:'karon', label:'Karon Beach', lat:7.8288, lng:98.2939, type:'beach' },
+        { id:'kata', label:'Kata Beach', lat:7.8279, lng:98.2951, type:'beach' },
+        { id:'oldtown', label:'Old Phuket Town', lat:7.8854, lng:98.3923, type:'landmark' },
+        { id:'bigbuddha', label:'Big Buddha', lat:7.8278, lng:98.3123, type:'landmark' },
+        { id:'bangtao', label:'Bang Tao Beach', lat:7.9834, lng:98.2869, type:'beach' }
+      ],
+      "Krabi": [
+        { id:'kbv', label:'Krabi Airport (KBV)', lat:8.0997, lng:98.9860, type:'airport' },
+        { id:'aonang', label:'Ao Nang Beach', lat:8.0379, lng:98.8220, type:'beach' },
+        { id:'railay', label:'Railay (beach/jetty area)', lat:8.0113, lng:98.8355, type:'pier' },
+        { id:'klong', label:'Klong Jilad Pier', lat:8.0522, lng:98.9099, type:'pier' },
+        { id:'krabiTown', label:'Krabi Town', lat:8.0863, lng:98.9063, type:'landmark' }
+      ],
+      "Phi Phi": [
+        { id:'tonsai', label:'Tonsai Pier', lat:7.7407, lng:98.7789, type:'pier' },
+        { id:'lohdalum', label:'Loh Dalum Beach', lat:7.7415, lng:98.7788, type:'beach' },
+        { id:'viewpoint1', label:'Viewpoint 1', lat:7.7429, lng:98.7874, type:'viewpoint' },
+        { id:'longbeach', label:'Long Beach (boat required)', lat:7.7420, lng:98.7835, type:'beach' }
+      ],
+      "Khao Sok": [
+        { id:'ks_entrance', label:'Khao Sok National Park Entrance', lat:8.9496, lng:98.5254, type:'park' },
+        { id:'cheowlan', label:'Cheow Lan Lake Pier (Ratchaprapha)', lat:8.6900, lng:98.5200, type:'pier' }
+      ],
+      "Bangkok": [
+        { id:'bkk', label:'Suvarnabhumi Airport (BKK)', lat:13.6900, lng:100.7501, type:'airport' },
+        { id:'dmk', label:'Don Mueang Airport (DMK)', lat:13.9125, lng:100.6069, type:'airport' },
+        { id:'siam', label:'Siam Paragon', lat:13.7460, lng:100.5348, type:'mall' },
+        { id:'central', label:'CentralWorld', lat:13.7461, lng:100.5394, type:'mall' },
+        { id:'asiatique', label:'Asiatique (riverside)', lat:13.7050, lng:100.5034, type:'landmark' },
+        { id:'grandpalace', label:'Grand Palace', lat:13.7500, lng:100.4913, type:'landmark' }
+      ]
     };
-  }
-  function closeModal(){ modalBg.style.display='none'; }
-  cancelBtn.onclick = closeModal;
-  modalBg.addEventListener('click',(e)=>{ if(e.target===modalBg) closeModal(); });
-  addBtn.onclick = ()=> openModal();
 
-  /* -------------------------
-     Map iframe & helper
-     ------------------------- */
-  function buildEmbedUrl(raw){
-    if(!raw) return 'https://www.google.com/maps?q=thailand&output=embed';
-    raw = raw.trim();
-    const coord = raw.match(/@?\s*([+-]?\d+\.\d+)\s*,\s*([+-]?\d+\.\d+)/);
-    if(coord){ const q = coord[1]+','+coord[2]; return 'https://www.google.com/maps?q='+encodeURIComponent(q)+'&output=embed'; }
-    const at = raw.match(/@([+-]?\d+\.\d+),([+-]?\d+\.\d+),/);
-    if(at){ const q = at[1]+','+at[2]; return 'https://www.google.com/maps?q='+encodeURIComponent(q)+'&output=embed'; }
-    if(raw.includes('/maps/embed') || raw.includes('maps.google.com/maps')){ return raw.includes('output=') ? raw : (raw + (raw.includes('?')? '&output=embed' : '?output=embed')); }
-    if(raw.startsWith('http')){ try{ const url = new URL(raw); if(url.hostname.includes('google')){ const q = url.searchParams.get('q') || url.pathname; return 'https://www.google.com/maps?q='+encodeURIComponent(q)+'&output=embed'; } }catch(e){} }
-    return 'https://www.google.com/maps?q='+encodeURIComponent(raw)+'&output=embed';
-  }
+    // ferry fallback durations (minutes) between major islands/ports (symmetric)
+    const ferryDurations = {
+      'Phuket|Phi Phi': 105,
+      'Phi Phi|Phuket': 105,
+      'Phi Phi|Krabi': 75,
+      'Krabi|Phi Phi': 75,
+      'Phuket|Krabi': 180,
+      'Krabi|Phuket': 180
+    };
 
-  function updateMap(){
-    if(!hotels.length || selectedIndex<0 || selectedIndex>=hotels.length){
-      selectedName.textContent = 'No hotel selected';
-      selectedLink.textContent = '—';
-      mapFrame.src = 'https://www.google.com/maps?q=thailand&output=embed';
-      return;
+    // Distance Matrix API key (you previously provided)
+    const DISTANCE_MATRIX_KEY = "AIzaSyCYMA5ydJhETa5lajz3WRh68xYv20xWwng";
+
+    // load Google Maps JS for DistanceMatrix
+    let mapsLoaded = false;
+    (function loadMaps(){
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${DISTANCE_MATRIX_KEY}`;
+      script.async = true; script.defer = true;
+      script.onload = ()=>{ mapsLoaded = true; };
+      script.onerror = ()=>{ console.warn('Google Maps JS failed to load — travel times will use fallbacks'); };
+      document.head.appendChild(script);
+    })();
+
+    // helpers
+    function esc(s){ return String(s||'').replace(/[&<>]/g, c=> ( {'&':'&amp;','<':'&lt;','>':'&gt;'}[c] )); }
+    function localSaveAll(){ localStorage.setItem(hotelsKey, JSON.stringify(hotels)); localStorage.setItem(selectedKey, selectedIndex); localStorage.setItem(itineraryKey, JSON.stringify(itinerary)); }
+    function localSaveSelection(){ localStorage.setItem(selectedKey, selectedIndex); }
+
+    // parse coordinates from various map link formats
+    function extractLatLng(raw){
+      if(!raw) return null;
+      const s = raw.trim();
+      // lat,lng pattern
+      const coord = s.match(/@?\s*([+-]?\d+\.\d+)\s*[, ]\s*([+-]?\d+\.\d+)/);
+      if(coord) return {lat: parseFloat(coord[1]), lng: parseFloat(coord[2])};
+      // google maps @lat,lng, pattern
+      const at = s.match(/@([+-]?\d+\.\d+),([+-]?\d+\.\d+),/);
+      if(at) return {lat: parseFloat(at[1]), lng: parseFloat(at[2])};
+      return null;
     }
-    const h = hotels[selectedIndex];
-    selectedName.textContent = h.name;
-    selectedLink.textContent = h.link || '—';
-    mapFrame.src = buildEmbedUrl(h.link || h.name);
-  }
 
-  zoomBtn.addEventListener('click', ()=>{ updateMap(); mapFrame.focus(); });
-  openBtn.addEventListener('click', ()=>{ if(!hotels.length) return; const h = hotels[selectedIndex]; const url = h.link || h.name || 'https://www.google.com/maps'; window.open(url,'_blank'); });
-
-  /* -------------------------
-     Itinerary rendering
-     ------------------------- */
-  function renderItinerary(){
-    nightsContainer.innerHTML = '';
-    for(let i=0;i<8;i++){
-      const div = document.createElement('div');
-      div.className='night';
-      const label = document.createElement('label');
-      label.innerText = `Feb ${21+i}`;
-      const sel = document.createElement('select');
-      sel.innerHTML = `<option value="">—</option>` + locations.map(l=>`<option value="${l}" ${itinerary[i]===l?'selected':''}>${l}</option>`).join('');
-      sel.onchange = async ()=>{
-        itinerary[i] = sel.value;
-        localSaveAll();
-        await saveItineraryData().catch(()=>{});
-        computeTravelSummary();
-      };
-      div.appendChild(label);
-      div.appendChild(sel);
-      nightsContainer.appendChild(div);
+    // build embed url for frame
+    function buildEmbedUrl(raw){
+      if(!raw) return 'https://www.google.com/maps?q=thailand&output=embed';
+      raw = raw.trim();
+      const coords = extractLatLng(raw);
+      if(coords) return `https://www.google.com/maps?q=${coords.lat},${coords.lng}&output=embed`;
+      if(raw.includes('/maps/embed') || raw.includes('maps.google.com/maps')) return raw.includes('output=') ? raw : raw + (raw.includes('?')? '&output=embed' : '?output=embed');
+      return 'https://www.google.com/maps?q=' + encodeURIComponent(raw) + '&output=embed';
     }
-  }
 
-  /* -------------------------
-     Firestore integration
-     ------------------------- */
-  // Firebase SDK loaded later via module script below. We'll expose save functions to top-level.
-  // Placeholders: saveHotelData, saveItineraryData (will be bound later)
-
-  /* -------------------------
-     Distance Matrix / Travel logic
-     ------------------------- */
-
-  // fallback ferry durations (minutes)
-  const ferryDurations = {
-    'Phuket|Phi Phi': 105,
-    'Phi Phi|Phuket': 105,
-    'Phi Phi|Krabi': 75,
-    'Krabi|Phi Phi': 75
-  };
-
-  // user-provided API key (Distance Matrix via Maps JS is initialized below)
-  const DISTANCE_MATRIX_KEY = "AIzaSyCYMA5ydJhETa5lajz3WRh68xYv20xWwng";
-
-  // dynamically load Maps JS with callback to markMapsLoaded
-  (function loadMaps(){
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${DISTANCE_MATRIX_KEY}`;
-    script.async = true;
-    script.defer = true;
-    script.onload = ()=>{ markMapsLoaded(); };
-    script.onerror = ()=>{ console.warn('Google Maps script failed to load'); };
-    document.head.appendChild(script);
-  })();
-
-  // Helper to call DistanceMatrixService (returns Promise)
-  function distanceMatrixRequest(origins, destinations, travelMode='DRIVING'){
-    return new Promise((resolve, reject)=>{
-      if(!mapsLoaded || !window.google || !window.google.maps){ reject(new Error('Maps not ready')); return; }
-      const service = new google.maps.DistanceMatrixService();
-      service.getDistanceMatrix({
-        origins: origins,
-        destinations: destinations,
-        travelMode: google.maps.TravelMode[travelMode],
-        unitSystem: google.maps.UnitSystem.METRIC,
-        avoidTolls: false,
-        avoidHighways: false
-      }, (response, status)=>{
-        if(status !== 'OK') return reject(new Error('DistanceMatrix status: ' + status));
-        resolve(response);
+    // distance matrix promise wrapper
+    function distanceMatrix(origins, destinations, travelMode='DRIVING'){
+      return new Promise((resolve, reject)=>{
+        if(!mapsLoaded || !window.google || !window.google.maps){ return reject(new Error('Maps not ready')); }
+        const service = new google.maps.DistanceMatrixService();
+        service.getDistanceMatrix({
+          origins, destinations,
+          travelMode: window.google.maps.TravelMode[travelMode],
+          unitSystem: window.google.maps.UnitSystem.METRIC,
+          avoidTolls:false, avoidHighways:false
+        }, (response, status)=>{
+          if(status !== 'OK') return reject(new Error('Status: ' + status));
+          resolve(response);
+        });
       });
-    });
-  }
+    }
 
-  // normalize place input for DistanceMatrix (use map link, booking link, name, or location)
-  function placeForMatrix(placeStr){
-    if(!placeStr) return '';
-    // if coordinates in string, return that
-    const coords = placeStr.match(/@?\s*([+-]?\d+\.\d+)\s*,\s*([+-]?\d+\.\d+)/);
-    if(coords) return coords[1] + ',' + coords[2];
-    // otherwise return raw string
-    return placeStr;
-  }
+    // find hotel index in itinerary: choose first occurrence (Q1:C uses first upcoming matching day)
+    function findHotelItineraryIndex(hotel){
+      for(let i=0;i<itinerary.length;i++){
+        if(itinerary[i] && hotel.location && itinerary[i] === hotel.location) return i;
+      }
+      return -1;
+    }
 
-  // compute travel summary for itinerary (pairwise consecutive nights)
-  async function computeTravelSummary(){
-    travelSummaryEl.textContent = 'Calculating travel times...';
-    const entries = [];
-    for(let i=1;i<itinerary.length;i++){
-      const prev = itinerary[i-1];
-      const curr = itinerary[i];
-      if(!prev || !curr){ entries.push({ from: prev, to: curr, text: '—' }); continue; }
-      // try Distance Matrix between place names (we'll use location names; fallback to names of hotels in that location)
-      try{
-        // attempt to resolve to representative place strings:
-        let fromStr = prev;
-        let toStr = curr;
-        // prefer a hotel name in that location if we have one
-        const fromHotel = hotels.find(h => h.location === prev);
-        const toHotel = hotels.find(h => h.location === curr);
-        if(fromHotel && fromHotel.link) fromStr = fromHotel.link;
-        if(toHotel && toHotel.link) toStr = toHotel.link;
+    // compute City Insights and Trip Insights for a hotel (returns object)
+    async function computeInsightsForHotel(hotel){
+      // result structure
+      const result = { city: hotel.location || null, cityPoints: [], tripInsight: null, notes: [] };
 
-        // if either side is Phi Phi and other is not same landmass, prefer ferry fallback if DM gives ZERO_RESULTS
-        const resp = await distanceMatrixRequest([placeForMatrix(fromStr)],[placeForMatrix(toStr)], 'DRIVING').catch(e=>null);
-        if(resp && resp.rows && resp.rows[0] && resp.rows[0].elements && resp.rows[0].elements[0] && resp.rows[0].elements[0].status === 'OK'){
-          const el = resp.rows[0].elements[0];
-          entries.push({ from: prev, to: curr, text: `${el.duration.text} • ${el.distance.text}` });
-        } else {
-          // fallback: ferry or rough defaults
-          const key = `${prev}|${curr}`;
-          if(ferryDurations[key]){
-            const mins = ferryDurations[key];
-            entries.push({ from: prev, to: curr, text: `${Math.floor(mins/60)} hr ${mins%60} min (ferry)` });
+      if(!hotel.location){
+        result.notes.push('No city set for this hotel.');
+        return result;
+      }
+      const city = hotel.location;
+      const points = CITY_POINTS[city] || [];
+
+      // get hotel place string (prefer link or latlng or name)
+      const placeStr = hotel.link && hotel.link.trim() ? hotel.link : (hotel.name || city);
+
+      // For each city point, try Distance Matrix (driving) or fallback
+      const cityResults = [];
+      // prepare origins/dests
+      // we'll query in batches to avoid quota spikes: chunk 10 max each
+      for(let p of points){
+        let destStr = `${p.lat},${p.lng}`;
+        try{
+          // attempt DM
+          const resp = await distanceMatrix([placeStr],[destStr],'DRIVING').catch(()=>null);
+          if(resp && resp.rows && resp.rows[0] && resp.rows[0].elements && resp.rows[0].elements[0] && resp.rows[0].elements[0].status === 'OK'){
+            const el = resp.rows[0].elements[0];
+            cityResults.push({ id:p.id, label:p.label, duration:el.duration.text, distance:el.distance.text, raw:el });
           } else {
-            // reasonable default: unknown route -> show "Check manually"
-            entries.push({ from: prev, to: curr, text: 'Route unknown — check manually' });
+            // If DM not OK (e.g. island walking), compute straight line distance and estimate walking/boat
+            const coordsHotel = extractLatLng(hotel.link) || null;
+            if(coordsHotel){
+              const dkm = haversine(coordsHotel.lat, coordsHotel.lng, p.lat, p.lng);
+              // estimate: if in Phi Phi (small island) treat as walking/boat
+              const approxMin = Math.round((dkm/5)*60); // assume 5 km/h walking or 30 km/h boat -> rough
+              cityResults.push({ id:p.id, label:p.label, duration: approxMin + ' min (approx)', distance: (dkm.toFixed(1) + ' km (approx)') });
+            } else {
+              cityResults.push({ id:p.id, label:p.label, duration: 'Unknown', distance: 'Unknown' });
+            }
+          }
+        }catch(e){
+          cityResults.push({ id:p.id, label:p.label, duration: 'Error', distance: '' });
+        }
+      }
+
+      result.cityPoints = cityResults;
+
+      // Trip Insight: find itinerary index for this hotel day
+      const idx = findHotelItineraryIndex(hotel);
+      if(idx >= 0 && idx < itinerary.length - 1){
+        const nextLoc = itinerary[idx+1];
+        if(nextLoc){
+          // compute insight depending on nextLoc and city
+          // If nextLoc is same city, nothing special
+          if(nextLoc === city){
+            result.tripInsight = { text: 'Next night is the same city — no inter-city travel needed.' };
+          } else {
+            // handle island/land travel combos
+            // If either is Phi Phi or island, provide pier-to-pier ferry info + hotel->pier driving
+            if(nextLoc === 'Phi Phi' || city === 'Phi Phi'){
+              // if staying in Phi Phi today and going to Krabi etc, do pier-driven logic
+              // choose most relevant pier in city (prefer Rassada for Phuket, Klong Jilad for Krabi, Tonsai for Phi Phi)
+              let fromPier = null, toPier = null;
+              if(city === 'Phuket') fromPier = CITY_POINTS['Phuket'].find(p=>p.id==='rassada') || CITY_POINTS['Phuket'][1];
+              else if(city === 'Krabi') fromPier = CITY_POINTS['Krabi'].find(p=>p.id==='klong') || CITY_POINTS['Krabi'][1];
+              else if(city === 'Phi Phi') fromPier = CITY_POINTS['Phi Phi'].find(p=>p.id==='tonsai') || CITY_POINTS['Phi Phi'][0];
+
+              if(nextLoc === 'Phi Phi') toPier = CITY_POINTS['Phi Phi'].find(p=>p.id==='tonsai') || CITY_POINTS['Phi Phi'][0];
+              else if(nextLoc === 'Krabi') toPier = CITY_POINTS['Krabi'].find(p=>p.id==='klong') || CITY_POINTS['Krabi'][1];
+              else if(nextLoc === 'Phuket') toPier = CITY_POINTS['Phuket'].find(p=>p.id==='rassada') || CITY_POINTS['Phuket'][1];
+
+              // compute hotel -> fromPier driving + ferry from fromPier->toPier
+              try{
+                const hotelToPierResp = await distanceMatrix([placeStr],[`${fromPier.lat},${fromPier.lng}`],'DRIVING').catch(()=>null);
+                let hotelToPierText = hotelToPierResp && hotelToPierResp.rows && hotelToPierResp.rows[0] && hotelToPierResp.rows[0].elements[0] && hotelToPierResp.rows[0].elements[0].status === 'OK'
+                  ? hotelToPierResp.rows[0].elements[0].duration.text + ' • ' + hotelToPierResp.rows[0].elements[0].distance.text
+                  : 'Unknown';
+
+                // ferry duration fallback
+                const ferryKey = `${city}|${nextLoc}`;
+                let ferryText = 'Unknown';
+                if(ferryDurations[ferryKey]) ferryText = Math.floor(ferryDurations[ferryKey]/60) + ' hr ' + (ferryDurations[ferryKey]%60) + ' min (ferry)';
+                // total approx: combine
+                result.tripInsight = {
+                  fromPierLabel: fromPier.label,
+                  toPierLabel: toPier.label,
+                  hotelToPier: hotelToPierText,
+                  ferry: ferryText,
+                  summary: `Hotel → ${fromPier.label}: ${hotelToPierText}; Ferry: ${ferryText}`
+                };
+              }catch(e){
+                result.tripInsight = { summary: 'Could not compute trip insight.' };
+              }
+            } else {
+              // land travel: request DM between hotel and representative point of nextLoc
+              // pick representative point for nextLoc: choose airport for Bangkok/Khao Sok? Khao Sok use park entrance
+              let nextPoint = null;
+              if(nextLoc === 'Khao Sok') nextPoint = CITY_POINTS['Khao Sok'][0];
+              else if(nextLoc === 'Bangkok') nextPoint = CITY_POINTS['Bangkok'][0];
+              else if(nextLoc === 'Krabi') nextPoint = CITY_POINTS['Krabi'][0];
+              else if(nextLoc === 'Phuket') nextPoint = CITY_POINTS['Phuket'][0];
+
+              try{
+                const resp = await distanceMatrix([placeStr],[`${nextPoint.lat},${nextPoint.lng}`],'DRIVING').catch(()=>null);
+                if(resp && resp.rows && resp.rows[0] && resp.rows[0].elements && resp.rows[0].elements[0] && resp.rows[0].elements[0].status === 'OK'){
+                  const el = resp.rows[0].elements[0];
+                  result.tripInsight = { summary: `${el.duration.text} • ${el.distance.text}`, detailed: el };
+                } else {
+                  // fallback approximate
+                  result.tripInsight = { summary: 'Route unknown — check manually' };
+                }
+              }catch(e){
+                result.tripInsight = { summary: 'Error calculating route' };
+              }
+            }
           }
         }
-      }catch(e){
-        entries.push({ from: prev, to: curr, text: 'Error calculating' });
-      }
-    }
-
-    // render
-    let html = '<strong>Travel summary (consecutive nights)</strong><br/><div style="margin-top:6px">';
-    for(let i=0;i<entries.length;i++){
-      const e = entries[i];
-      html += `<div style="margin-bottom:6px">${escapeHtml(e.from||'—')} → ${escapeHtml(e.to||'—')}: <span style="color:#e6eef6">${escapeHtml(e.text)}</span></div>`;
-    }
-    html += '</div>';
-    travelSummaryEl.innerHTML = html;
-  }
-
-  // compare two hotels: compute DM between hotels by index
-  async function computeCompare(indexA, indexB){
-    comparePanel.style.display='block';
-    comparePanel.textContent = 'Calculating...';
-    const a = hotels[indexA];
-    const b = hotels[indexB];
-    if(!a || !b){ comparePanel.textContent = 'Invalid hotels'; return; }
-
-    const aPlace = a.link || a.name || a.location;
-    const bPlace = b.link || b.name || b.location;
-
-    // if same location, say zero
-    if(aPlace === bPlace || (a.location && b.location && a.location === b.location)){
-      comparePanel.innerHTML = `<strong>Comparison</strong><div style="margin-top:6px">${escapeHtml(a.name)} → ${escapeHtml(b.name)}: same location</div>`;
-      return;
-    }
-
-    try{
-      const resp = await distanceMatrixRequest([placeForMatrix(aPlace)], [placeForMatrix(bPlace)], 'DRIVING').catch(()=>null);
-      if(resp && resp.rows && resp.rows[0] && resp.rows[0].elements && resp.rows[0].elements[0] && resp.rows[0].elements[0].status === 'OK'){
-        const el = resp.rows[0].elements[0];
-        comparePanel.innerHTML = `<strong>Comparison</strong>
-          <div style="margin-top:6px">${escapeHtml(a.name)} → ${escapeHtml(b.name)}</div>
-          <div style="margin-top:6px">${el.duration.text} • ${el.distance.text} (drive)</div>`;
       } else {
-        // try ferry fallback if known
-        const key = `${a.location}|${b.location}`;
-        if(ferryDurations[key]){
-          const mins = ferryDurations[key];
-          comparePanel.innerHTML = `<strong>Comparison</strong>
-            <div style="margin-top:6px">${escapeHtml(a.name)} → ${escapeHtml(b.name)}</div>
-            <div style="margin-top:6px">${Math.floor(mins/60)} hr ${mins%60} min (ferry)</div>`;
-        } else {
-          comparePanel.innerHTML = `<strong>Comparison</strong>
-            <div style="margin-top:6px">${escapeHtml(a.name)} → ${escapeHtml(b.name)}</div>
-            <div style="margin-top:6px">No direct driving route found — consider ferry or flight</div>`;
-        }
+        result.tripInsight = { text: 'No next-night itinerary found — add in nights to see trip insights.' };
       }
-    }catch(e){
-      comparePanel.textContent = 'Error computing comparison';
+
+      return result;
     }
-  }
 
-  // allow clearing compare panel
-  let compareTarget = null;
+    // helper: haversine distance in km (approx)
+    function haversine(lat1, lon1, lat2, lon2){
+      const R = 6371;
+      const toRad = v => v * Math.PI / 180;
+      const dLat = toRad(lat2-lat1);
+      const dLon = toRad(lon2-lon1);
+      const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)*Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
 
-  /* -------------------------
-     Initial UI rendering
-     ------------------------- */
-  renderList();
-  renderItinerary();
-  updateMap();
-  computeTravelSummary();
+    // ---- Rendering list and expanded card logic ----
+    function renderList(){
+      hotelListEl.innerHTML = '';
+      if(!hotels.length){ hotelListEl.appendChild(emptyMsg); return; }
+      hotels.forEach((h,i)=>{
+        const el = document.createElement('div');
+        el.className = 'hotel' + (i===selectedIndex ? ' selected':'');
+        // meta
+        const meta = document.createElement('div'); meta.className = 'meta';
+        const nm = document.createElement('div'); nm.className = 'name'; nm.innerHTML = esc(h.name || '');
+        const tag = document.createElement('div'); tag.className = 'sub';
+        // location tag on separate line
+        const tagEl = document.createElement('span'); tagEl.className = 'tag';
+        if(h.location) { tagEl.textContent = h.location; tagEl.classList.add(h.location.toLowerCase().replace(/\s+/g,'')); tag.appendChild(tagEl); }
+        const sub2 = document.createElement('div'); sub2.className = 'sub'; sub2.textContent = h.link || '';
+        meta.appendChild(nm);
+        meta.appendChild(tag);
+        meta.appendChild(sub2);
 
-  /* -------------------------
-     Expose certain funcs for Firebase script to call
-     ------------------------- */
-  window.computeTravelSummary = computeTravelSummary;
-  window.computeCompare = computeCompare;
-  window.renderList = renderList;
-  window.renderItinerary = renderItinerary;
-  window.updateMap = updateMap;
-  window.localSaveAll = localSaveAll;
+        // controls (go/edit/delete + heart)
+        const controls = document.createElement('div'); controls.className = 'controls';
+        const heartBtn = document.createElement('button'); heartBtn.className = 'heart' + (h.favorite ? ' liked' : ''); heartBtn.innerHTML = h.favorite ? '❤' : '♡';
+        heartBtn.onclick = async (ev)=>{ ev.stopPropagation(); h.favorite = !h.favorite; heartBtn.innerHTML = h.favorite ? '❤' : '♡'; heartBtn.classList.toggle('liked', h.favorite); localSaveAll(); try{ await saveHotelData(); }catch(e){ } };
+        const row = document.createElement('div'); row.className = 'row';
+        const go = document.createElement('button'); go.className = 'small'; go.innerText = 'Go'; if(h.booking && h.booking.trim()){ go.onclick = (ev)=>{ ev.stopPropagation(); window.open(h.booking,'_blank'); }; } else { go.classList.add('disabled'); }
+        const edit = document.createElement('button'); edit.className = 'small'; edit.innerText = 'Edit'; edit.onclick = (ev)=>{ ev.stopPropagation(); openModal(h.name,h.link,i,h.booking,h.location,h.favorite); };
+        const del = document.createElement('button'); del.className = 'small'; del.innerText = 'Delete'; del.onclick = async (ev)=>{ ev.stopPropagation(); if(confirm('Delete "'+h.name+'"?')){ hotels.splice(i,1); if(selectedIndex>=hotels.length) selectedIndex = hotels.length-1; localSaveAll(); try{ await saveHotelData(); }catch(e){}; renderList(); updateMap(); } };
+        row.appendChild(go); row.appendChild(edit); row.appendChild(del);
+        controls.appendChild(heartBtn); controls.appendChild(row);
 
-  /* -------------------------
-     Firestore module (load firebase as module)
-     ------------------------- */
+        // append meta + controls
+        el.appendChild(meta); el.appendChild(controls);
+
+        // expanded area placeholder
+        const extra = document.createElement('div'); extra.className = 'hotel-extra';
+        extra.innerHTML = `<div class="insights"><div class="insightBox" id="insight-city-${i}"><h4>City insights</h4><div id="city-list-${i}">Loading…</div><div class="showMore" id="city-showmore-${i}" style="display:none">Show more</div></div><div class="insightBox" id="insight-trip-${i}"><h4>Trip insights</h4><div id="trip-list-${i}">Loading…</div></div></div><div class="insightNote" id="insight-note-${i}"></div>`;
+        el.appendChild(extra);
+
+        // click behavior: select/collapse + compute insights
+        el.addEventListener('click', async (ev)=>{
+          // toggle expansion on click
+          const already = el.classList.contains('expanded');
+          // collapse all others
+          document.querySelectorAll('.hotel.expanded').forEach(node=>{ node.classList.remove('expanded'); });
+          if(!already){
+            el.classList.add('expanded');
+            selectedIndex = i; localSaveSelection(); renderListPartial(); updateMap();
+            // compute insights for this hotel and populate the extra area
+            const targetCityList = document.getElementById(`city-list-${i}`);
+            const targetTripList = document.getElementById(`trip-list-${i}`);
+            const targetNote = document.getElementById(`insight-note-${i}`);
+            targetCityList.innerHTML = 'Computing...'; targetTripList.innerHTML = 'Computing...'; targetNote.textContent = '';
+            try{
+              const insights = await computeInsightsForHotel(h);
+              // CITY INSIGHTS: show top 4 + show more
+              const allCity = insights.cityPoints || [];
+              const top = allCity.slice(0,4);
+              targetCityList.innerHTML = '';
+              top.forEach(c=>{
+                const div = document.createElement('div'); div.className='insightItem';
+                div.innerHTML = `<span>${esc(c.label)}</span><span style="font-weight:700">${esc(c.duration)}${c.distance? ' • '+esc(c.distance):''}</span>`;
+                targetCityList.appendChild(div);
+              });
+              const showMoreBtn = document.getElementById(`city-showmore-${i}`);
+              if(allCity.length > 4){
+                showMoreBtn.style.display = 'inline';
+                let expanded = false;
+                showMoreBtn.onclick = ()=>{
+                  expanded = !expanded;
+                  if(expanded){
+                    // show the rest
+                    for(let j=4;j<allCity.length;j++){
+                      const c = allCity[j];
+                      const div = document.createElement('div'); div.className='insightItem';
+                      div.innerHTML = `<span>${esc(c.label)}</span><span style="font-weight:700">${esc(c.duration)}${c.distance? ' • '+esc(c.distance):''}</span>`;
+                      targetCityList.appendChild(div);
+                    }
+                    showMoreBtn.textContent = 'Show less';
+                  } else {
+                    // collapse to top 4
+                    targetCityList.innerHTML = '';
+                    allCity.slice(0,4).forEach(c=>{
+                      const div = document.createElement('div'); div.className='insightItem';
+                      div.innerHTML = `<span>${esc(c.label)}</span><span style="font-weight:700">${esc(c.duration)}${c.distance? ' • '+esc(c.distance):''}</span>`;
+                      targetCityList.appendChild(div);
+                    });
+                    showMoreBtn.textContent = 'Show more';
+                  }
+                };
+              } else {
+                showMoreBtn.style.display = 'none';
+              }
+
+              // TRIP INSIGHT
+              if(insights.tripInsight){
+                if(insights.tripInsight.summary){
+                  targetTripList.innerHTML = `<div class="insightItem"><span>Summary</span><span style="font-weight:700">${esc(insights.tripInsight.summary)}</span></div>`;
+                } else if(insights.tripInsight.hotelToPier || insights.tripInsight.ferry){
+                  let html = '';
+                  html += `<div class="insightItem"><span>Hotel → ${esc(insights.tripInsight.fromPierLabel)}</span><span style="font-weight:700">${esc(insights.tripInsight.hotelToPier)}</span></div>`;
+                  html += `<div class="insightItem"><span>Ferry</span><span style="font-weight:700">${esc(insights.tripInsight.ferry)}</span></div>`;
+                  targetTripList.innerHTML = html;
+                } else if(insights.tripInsight.text){
+                  targetTripList.innerHTML = `<div class="insightItem"><span>${esc(insights.tripInsight.text)}</span></div>`;
+                } else {
+                  targetTripList.innerHTML = `<div class="insightItem"><span>Trip info unavailable</span></div>`;
+                }
+              } else {
+                targetTripList.innerHTML = `<div class="insightItem"><span>No trip insight available</span></div>`;
+              }
+
+              // notes
+              if(insights.notes && insights.notes.length) targetNote.textContent = insights.notes.join(' · ');
+            }catch(e){
+              targetCityList.innerHTML = 'Error computing insights';
+              targetTripList.innerHTML = 'Error computing insights';
+              targetNote.textContent = String(e);
+            }
+            // re-render to refresh classes etc
+            renderListPartial();
+          } else {
+            el.classList.remove('expanded');
+            // keep selection but collapse
+            renderListPartial();
+          }
+        });
+
+        hotelListEl.appendChild(el);
+      });
+    }
+
+    // partial render (keeps expanded states)
+    function renderListPartial(){
+      // We recreate only metadata text (so expansions remain) — simplest: re-render all but preserve expanded states and scroll
+      const expandedIndex = (()=>{ const ex = document.querySelector('.hotel.expanded'); if(!ex) return null; const nodes = Array.from(document.querySelectorAll('.hotel')); return nodes.indexOf(ex); })();
+      renderList();
+      // re-expand previous if any
+      if(expandedIndex !== null && expandedIndex >=0){
+        const node = document.querySelectorAll('.hotel')[expandedIndex];
+        if(node) node.classList.add('expanded');
+      }
+    }
+
+    // update map based on selection
+    function updateMap(){
+      if(!hotels.length || selectedIndex<0 || selectedIndex>=hotels.length){
+        selectedName.textContent='No hotel selected'; selectedLink.textContent='—'; mapFrame.src = 'https://www.google.com/maps?q=thailand&output=embed'; return;
+      }
+      const h = hotels[selectedIndex];
+      selectedName.textContent = h.name;
+      selectedLink.textContent = h.link || '—';
+      mapFrame.src = buildEmbedUrl(h.link || h.name);
+    }
+
+    // Modal and create/edit hotel
+    function openModal(name='', link='', editIndex=null, booking='', location='', favorite=false){
+      nameInput.value = name || '';
+      linkInput.value = link || '';
+      bookingInput.value = booking || '';
+      locationSelect.value = location || '';
+      modalBg.style.display = 'flex';
+      saveBtn.onclick = async ()=>{
+        const n = nameInput.value.trim(); const l = linkInput.value.trim(); const b = bookingInput.value.trim(); const loc = locationSelect.value;
+        if(!n){ alert('Please enter a hotel name'); nameInput.focus(); return; }
+        const entry = { name:n, link:l, booking:b, location:loc, favorite: !!favorite };
+        if(editIndex===null){ hotels.push(entry); selectedIndex = hotels.length-1; } else { hotels[editIndex] = entry; selectedIndex = editIndex; }
+        localSaveAll();
+        try{ await saveHotelData(); }catch(e){ console.warn(e); }
+        renderList(); updateMap();
+        closeModal();
+      };
+    }
+    function closeModal(){ modalBg.style.display='none'; }
+    cancelBtn.onclick = closeModal;
+    modalBg.addEventListener('click', (e)=>{ if(e.target===modalBg) closeModal(); });
+    addBtn.addEventListener('click', ()=> openModal());
+
+    // itinerary rendering
+    function renderItinerary(){
+      nightsContainer.innerHTML = '';
+      for(let i=0;i<8;i++){
+        const nightDate = new Date(startDate);
+        nightDate.setDate(startDate.getDate()+i);
+        const div = document.createElement('div'); div.className='night';
+        const sel = document.createElement('select');
+        sel.innerHTML = `<option value="">—</option>` + destinations.map(d=>`<option value="${d}" ${itinerary[i]===d?'selected':''}>${d}</option>`).join('');
+        sel.onchange = async ()=>{ itinerary[i] = sel.value; localSaveAll(); try{ await saveItineraryData(); }catch(e){}; /* recompute open insights if any expanded */ document.querySelectorAll('.hotel.expanded').forEach(async (node)=>{ const idx = Array.from(document.querySelectorAll('.hotel')).indexOf(node); if(idx>=0){ // recompute insights for expanded hotel
+            const h = hotels[idx];
+            const cityListEl = document.getElementById(`city-list-${idx}`);
+            const tripListEl = document.getElementById(`trip-list-${idx}`);
+            if(cityListEl) cityListEl.innerHTML = 'Updating...';
+            if(tripListEl) tripListEl.innerHTML = 'Updating...';
+            try{ const ins = await computeInsightsForHotel(h);
+              // render minimal summary as before
+              if(cityListEl){ cityListEl.innerHTML = ''; ins.cityPoints.slice(0,4).forEach(c=>{ const d = document.createElement('div'); d.className='insightItem'; d.innerHTML = `<span>${esc(c.label)}</span><span style="font-weight:700">${esc(c.duration)}${c.distance? ' • '+esc(c.distance):''}</span>`; cityListEl.appendChild(d); }); }
+              if(tripListEl){ tripListEl.innerHTML = ''; if(ins.tripInsight && ins.tripInsight.summary) tripListEl.innerHTML = `<div class="insightItem"><span>Summary</span><span style="font-weight:700">${esc(ins.tripInsight.summary)}</span></div>`; }
+            }catch(e){ if(cityListEl) cityListEl.innerHTML='Error'; if(tripListEl) tripListEl.innerHTML='Error'; }
+          }}); };
+        div.appendChild(document.createElement('label')).innerText = `Feb ${21+i}`;
+        div.replaceChild(sel, div.lastChild);
+        nightsContainer.appendChild(div);
+      }
+    }
+
+    // zoom/open/map controls
+    zoomBtn.addEventListener('click', ()=>{ updateMap(); mapFrame.focus(); });
+    openBtn.addEventListener('click', ()=>{ if(!hotels.length) return; const h = hotels[selectedIndex]; const url = h.link || h.name || 'https://www.google.com/maps'; window.open(url,'_blank'); });
+
+    // clear
+    clearStorage.addEventListener('click', ()=>{
+      if(confirm('Clear saved hotels and itinerary locally? (This will also clear synced data when connection active)')){
+        hotels = []; itinerary = Array.from({length:8},()=> ''); selectedIndex = 0; localSaveAll();
+        if(window.saveHotelData && window.saveItineraryData){ saveHotelData().catch(()=>{}); saveItineraryData().catch(()=>{}); }
+        renderList(); updateMap(); renderItinerary();
+      }
+    });
+
+    // initial render
+    renderList();
+    renderItinerary();
+    updateMap();
+
+    // expose for Firestore module
+    window.saveHotelData = async ()=>{};
+    window.saveItineraryData = async ()=>{};
+
   </script>
 
   <!-- Firebase + Firestore -->
   <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-  import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+    import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
-  // Firebase config (your project)
-  const firebaseConfig = {
-    apiKey: "AIzaSyBS5earknRLZQWj9kn0qhJFgMfD8EgNY_0",
-    authDomain: "planner-21feb.firebaseapp.com",
-    projectId: "planner-21feb",
-    storageBucket: "planner-21feb.firebasestorage.app",
-    messagingSenderId: "552796038598",
-    appId: "1:552796038598:web:67538b22c836890c257ec7"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyBS5earknRLZQWj9kn0qhJFgMfD8EgNY_0",
+      authDomain: "planner-21feb.firebaseapp.com",
+      projectId: "planner-21feb",
+      storageBucket: "planner-21feb.firebasestorage.app",
+      messagingSenderId: "552796038598",
+      appId: "1:552796038598:web:67538b22c836890c257ec7"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const hotelsCol = collection(db,"hotels");
+    const itineraryCol = collection(db,"itinerary");
 
-  const hotelsCol = collection(db,"hotels");
-  const itineraryCol = collection(db,"itinerary");
+    // Save hotels
+    async function saveHotelData(){
+      try{
+        for(let i=0;i<hotels.length;i++){
+          const obj = {
+            name: hotels[i].name || '',
+            link: hotels[i].link || '',
+            booking: hotels[i].booking || '',
+            location: hotels[i].location || '',
+            favorite: !!hotels[i].favorite
+          };
+          await setDoc(doc(db,"hotels",String(i)), obj);
+        }
+        const snap = await getDocs(hotelsCol);
+        for(const d of snap.docs){
+          const idn = Number(d.id);
+          if(!Number.isNaN(idn) && idn >= hotels.length) await deleteDoc(doc(db,"hotels",d.id));
+        }
+      }catch(e){ console.warn('saveHotelData err',e); }
+    }
 
-  // Save hotels (indexed docs)
-  async function saveHotelData(){
-    try{
-      for(let i=0;i<hotels.length;i++){
-        const obj = {
-          name: hotels[i].name || '',
-          link: hotels[i].link || '',
-          booking: hotels[i].booking || '',
-          location: hotels[i].location || '',
-          favorite: !!hotels[i].favorite
-        };
-        await setDoc(doc(db,"hotels",String(i)), obj);
-      }
-      // cleanup leftover docs
-      const snap = await getDocs(hotelsCol);
-      for(const d of snap.docs){
-        const idn = Number(d.id);
-        if(!Number.isNaN(idn) && idn >= hotels.length) await deleteDoc(doc(db,"hotels",d.id));
-      }
-    }catch(e){ console.warn('saveHotelData err',e); }
-  }
+    // Save itinerary
+    async function saveItineraryData(){
+      try{
+        for(let i=0;i<itinerary.length;i++){
+          await setDoc(doc(db,"itinerary",String(i)), { place: itinerary[i] || '' });
+        }
+        const snap = await getDocs(itineraryCol);
+        for(const d of snap.docs){
+          const idn = Number(d.id);
+          if(!Number.isNaN(idn) && idn >= itinerary.length) await deleteDoc(doc(db,"itinerary",d.id));
+        }
+      }catch(e){ console.warn('saveItineraryData err',e); }
+    }
 
-  // Save itinerary
-  async function saveItineraryData(){
-    try{
-      for(let i=0;i<itinerary.length;i++){
-        await setDoc(doc(db,"itinerary",String(i)), { place: itinerary[i] || '' });
-      }
-      const snap = await getDocs(itineraryCol);
-      for(const d of snap.docs){
-        const idn = Number(d.id);
-        if(!Number.isNaN(idn) && idn >= itinerary.length) await deleteDoc(doc(db,"itinerary",d.id));
-      }
-    }catch(e){ console.warn('saveItineraryData err',e); }
-  }
+    // listen for remote changes
+    onSnapshot(hotelsCol, snapshot=>{
+      try{
+        const arr = snapshot.docs
+          .filter(d=>!isNaN(Number(d.id)))
+          .map(d=>({ id: Number(d.id), data: d.data() }))
+          .sort((a,b)=>a.id-b.id)
+          .map(x=> {
+            const dd = x.data || {};
+            return { name: dd.name||'', link: dd.link||'', booking: dd.booking||'', location: dd.location||'', favorite: !!dd.favorite };
+          });
 
-  // Sync from Firestore -> local
-  onSnapshot(hotelsCol, snapshot=>{
-    try{
-      const arr = snapshot.docs
-        .filter(d=>!isNaN(Number(d.id)))
-        .map(d=>({ id: Number(d.id), data: d.data()}))
-        .sort((a,b)=>a.id-b.id)
-        .map(x=> {
-          const dd = x.data || {};
-          return { name: dd.name||'', link: dd.link||'', booking: dd.booking||'', location: dd.location||'', favorite: !!dd.favorite };
-        });
+        const remote = JSON.stringify(arr);
+        const local = JSON.stringify(hotels);
+        if(remote !== local){
+          hotels = arr;
+          localSaveAll();
+          if(selectedIndex >= hotels.length) selectedIndex = Math.max(0, hotels.length-1);
+          // re-render and update
+          window.requestAnimationFrame(()=>{ renderList(); updateMap(); renderItinerary(); });
+        }
+      }catch(e){ console.warn('hotels snapshot err',e); }
+    }, err=>{ console.warn('hotels onSnapshot error',err); });
 
-      const remote = JSON.stringify(arr);
-      const local = JSON.stringify(hotels);
-      if(remote !== local){
-        hotels = arr;
-        localSaveAll();
-        if(selectedIndex >= hotels.length) selectedIndex = Math.max(0, hotels.length-1);
-        renderList();
-        updateMap();
-        computeTravelSummary();
-      }
-    }catch(e){ console.warn('hotels snapshot err',e); }
-  }, err=>{ console.warn('hotels onSnapshot error',err); });
+    onSnapshot(itineraryCol, snapshot=>{
+      try{
+        const arr = snapshot.docs
+          .filter(d=>!isNaN(Number(d.id)))
+          .map(d=>({ id: Number(d.id), data: d.data() }))
+          .sort((a,b)=>a.id-b.id)
+          .map(x=> x.data && typeof x.data.place !== 'undefined' ? x.data.place : '');
 
-  onSnapshot(itineraryCol, snapshot=>{
-    try{
-      const arr = snapshot.docs
-        .filter(d=>!isNaN(Number(d.id)))
-        .map(d=>({ id: Number(d.id), data: d.data()}))
-        .sort((a,b)=>a.id-b.id)
-        .map(x=> x.data && typeof x.data.place !== 'undefined' ? x.data.place : '');
+        const remote = JSON.stringify(arr);
+        const local = JSON.stringify(itinerary);
+        if(remote !== local){
+          itinerary = arr.length ? arr : Array.from({length:8},()=> '');
+          localSaveAll();
+          renderItinerary();
+        }
+      }catch(e){ console.warn('itinerary snapshot err',e); }
+    }, err=>{ console.warn('itinerary onSnapshot err',err); });
 
-      const remote = JSON.stringify(arr);
-      const local = JSON.stringify(itinerary);
-      if(remote !== local){
-        itinerary = arr.length ? arr : Array.from({length:8},()=> '');
-        localSaveAll();
-        renderItinerary();
-        computeTravelSummary();
-      }
-    }catch(e){ console.warn('itinerary snapshot err',e); }
-  }, err=>{ console.warn('itinerary onSnapshot err',err); });
+    // Expose save functions to global
+    window.saveHotelData = saveHotelData;
+    window.saveItineraryData = saveItineraryData;
 
-  // expose save functions for main script
-  window.saveHotelData = saveHotelData;
-  window.saveItineraryData = saveItineraryData;
-
-  // initial push: if local has data, push to Firestore (creates docs)
-  setTimeout(async ()=>{
-    try{ await saveHotelData(); }catch(e){ console.warn('initial saveHotelData',e); }
-    try{ await saveItineraryData(); }catch(e){ console.warn('initial saveItineraryData',e); }
-  }, 800);
-
-  </script>
-
-  <script>
-  // allow clearing everything from UI
-  clearStorage.addEventListener('click', async ()=>{
-    if(!confirm('Clear saved hotels and itinerary locally (will also attempt to clear remote)?')) return;
-    hotels = [];
-    itinerary = Array.from({length:8},()=> '');
-    selectedIndex = 0;
-    localSaveAll();
-    renderList(); renderItinerary(); updateMap(); computeTravelSummary();
-    // attempt server clear
-    if(window.saveHotelData) try{ await saveHotelData(); }catch(e){ console.warn(e); }
-    if(window.saveItineraryData) try{ await saveItineraryData(); }catch(e){ console.warn(e); }
-  });
-
-  // keyboard hint: Ctrl/Cmd click to compare two hotels
-  document.addEventListener('keydown', (e)=>{ /* reserved for future */ });
-
+    // initial push local->server
+    setTimeout(async ()=>{
+      try{ await saveHotelData(); }catch(e){ console.warn('initial saveHotelData',e); }
+      try{ await saveItineraryData(); }catch(e){ console.warn('initial saveItineraryData',e); }
+    }, 800);
   </script>
 </body>
 </html>
